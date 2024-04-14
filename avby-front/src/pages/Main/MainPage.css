@@ -1,0 +1,310 @@
+
+/* css for section title_main */
+
+.section{
+    width: 100%;
+}
+.container{
+    width: 1110px;
+    margin: 0 auto;
+}
+
+.title__main{
+    font-size: 22px;
+    color: black;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+}
+
+p.text__sub{
+    margin: 0;
+    margin-top: 8px;
+    color: #7F8FA4;
+}
+
+.place__city{
+    margin-top: 30px;
+    width: 855px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;   
+}
+
+.place__city span{
+    font-size: 13px;
+    color: #7F8FA4;
+    display: flex;
+    font-weight: normal;
+}
+
+.place__city p{
+    margin: 0;
+    display: flex;
+    font-weight: 400;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: black;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 7px;
+    box-shadow: 0 0.0625rem 0 0 rgb(0 0 0 / 25%);
+}
+
+
+/* css mainblock */
+
+.main__block{
+    width: 1110px;
+    margin: 15px auto 0;
+    padding: 0;
+    display: flex;
+}
+.layout__main{
+    width: 855px;
+}
+.box-shadow{
+    box-shadow: 0px 1px 2px rgb(0 0 0 / 15%),0px 0px 16px rgb(0 0 0 / 15%),inset 0px 0.5px 0px rgb(255 255 255 / 50%)!important;
+}
+
+/* css for panel-s */
+
+.panel-s{
+    display: flex;
+    border-bottom: 1px solid #E1E8EE;
+}
+
+.panel-brand{
+    width: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #E1E8EE
+}
+
+.panel-brand select{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: none;
+    width: 100%;
+    height: 51px;
+    background: white;
+}
+
+
+.panel-model{
+    width: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.panel-model select{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: none;
+    width: 100%;
+    height: 51px;
+    background: white;
+}
+
+/* css for panel-d */
+
+
+/* css for section title */
+
+.section__cars{
+    margin-top: 30px;
+}
+
+.home__title{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 0px;
+    background: transparent;
+}
+
+.home__title select{
+    border-color: rgba(51, 51, 51, 0.5);
+    border-radius: 5px; 
+    background: transparent;
+}
+
+.home__title p{
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+}
+
+
+/* css for block cars */
+
+.block__car{
+    width: 100%;
+    padding: 20px;
+    background: white;
+    margin-bottom: 10px;
+    border-radius: 12px;
+}
+
+.i-car{
+    display: flex;
+    background: white;
+}
+
+.car__img img{
+    width: 267px;
+    height: 195px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.car__text{
+    width: 100%;
+}
+.car__info{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    padding: 0 0 0 20px;
+}
+
+.list__info{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.list__info h3{
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.car-in{
+    display: flex;
+    flex-wrap: wrap;
+    color: black;
+    font-size: 16px;
+    margin-top: 5px;
+    font-weight: normal;
+    flex-direction: column;
+}
+
+
+.title_-list-price{
+    color: black;
+    flex-shrink: 0;
+    margin-left: 10px;
+    display: flex;
+    align-items: end;
+    flex-direction: column;
+}
+
+span.price__byn {
+    font-weight: 900;
+    font-family: 'Inter',sans-serif;
+    color: #1967d2;
+    font-size: 18px;
+    display: block;
+}
+
+span.price__usd {
+    font-weight: 400;
+    color: #808080bf;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.item-car-city{
+    display: flex;
+    margin-top: 90px;
+    padding-top: 10px;
+    align-items: end;
+    justify-content: space-between;
+    color: black;
+}
+
+span.time-ago{
+    color: #808080bf;
+    font-size: 14px;
+    display: block;
+}
+
+/* css for pagination */
+
+.show__all-cars{
+    width: 100%;
+}
+
+.show__all--btn{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px 0;
+    background: transparent;
+}
+
+.show__all--btn a{
+    cursor: pointer;
+    background: white;
+    color: black;
+    padding: 13px 26px;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.show__all--btn a:hover{
+    color: #1967d2;
+}
+/* css for sidebar */
+
+.layout__sidebar{
+    width: 100%;
+    margin-left: 15px;
+    max-width: 240px;
+}
+
+.sidebar__lada{
+    margin: 0;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.layout__sidebar img{
+    width: 100%;
+    margin: 0;
+}
+
+.sidebar__lada p{
+    position: absolute;
+    margin: 0;
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+}
+
+
+.text-1{
+    top: 356px;
+    right: 290px;
+}
+
+.text-2{
+    top: 382px;
+    right:240px;
+}
