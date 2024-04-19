@@ -66,15 +66,19 @@ class Car(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
 
-    # Seller info
+    # Владелец
     seller = models.ForeignKey(User, on_delete=models.CASCADE, default=1, blank=True, related_name='cars_for_sale')
+
+    # Количество просмотров
+    views_count = models.PositiveIntegerField(verbose_name='Количество просмотров',default=0)
+
 
     class Meta:
         verbose_name = 'Автомобиль'
         verbose_name_plural = 'Автомобили'
 
     def get_absolute_url(self):
-        return f'/cars/detail/{self.slug}/'
+        return f'/cars/{self.brand.slug}/{self.model.slug}/{self.id}/'
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -86,7 +90,7 @@ class Car(models.Model):
 
 
 class CarPhoto(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, verbose_name='Автомобиль')
     photo = models.ImageField('Фото', upload_to='cars_photo/')
 
     class Meta:
@@ -97,7 +101,7 @@ class CarPhoto(models.Model):
         return f'{self.car.name} photo'
 
 class CarLink(models.Model):
-    link = models.URLField('Ссылка на объявление', max_length=200)
+    link = models.URLField(verbose_name='Ссылка на объявление')
 
     def __str__(self) -> str:
         return self.link
