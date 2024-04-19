@@ -1,4 +1,4 @@
-export default function CarParams({ car }) {
+export default function CarParams({ params }) {
   return (
     <div className="car_main params">
       <div className="params__center">
@@ -7,7 +7,7 @@ export default function CarParams({ car }) {
             <p>Объем двигателя</p>
           </div>
           <div className="params__value">
-            <p>{car.engine_capacity} л.</p>
+            <p>{params.engine_capacity} л.</p>
           </div>
         </div>
         <div className="params__param">
@@ -15,7 +15,7 @@ export default function CarParams({ car }) {
             <p>Цвет</p>
           </div>
           <div className="params__value">
-            <p>{car.color} л.</p>
+            <p>{params.color} л.</p>
           </div>
         </div>
         <div className="params__param">
@@ -23,7 +23,7 @@ export default function CarParams({ car }) {
             <p>Тип двигателя</p>
           </div>
           <div className="params__value">
-            <p>{car.fuel_type}</p>
+            <p>{params.fuel_type}</p>
           </div>
         </div>
         <div className="params__param">
@@ -31,7 +31,7 @@ export default function CarParams({ car }) {
             <p>Привод</p>
           </div>
           <div className="params__value">
-            <p>{car.drive_type}</p>
+            <p>{params.drive_type}</p>
           </div>
         </div>
         <div className="params__param">
@@ -39,7 +39,7 @@ export default function CarParams({ car }) {
             <p>Коробка передач</p>
           </div>
           <div className="params__value">
-            <p>{car.transmission_type}</p>
+            <p>{params.transmission_type}</p>
           </div>
         </div>
         <div className="params__param">
@@ -47,7 +47,7 @@ export default function CarParams({ car }) {
             <p>Кузов</p>
           </div>
           <div className="params__value">
-            <p>{car.car_body}</p>
+            <p>{params.car_body}</p>
           </div>
         </div>
         <div className="params__param">
@@ -55,7 +55,7 @@ export default function CarParams({ car }) {
             <p>Пробег</p>
           </div>
           <div className="params__value">
-            <p>{car.milage} км.</p>
+            <p>{params.milage} км.</p>
           </div>
         </div>
         <div className="params__param">
@@ -63,7 +63,7 @@ export default function CarParams({ car }) {
             <p>Год выпуска</p>
           </div>
           <div className="params__value">
-            <p>{car.year} года</p>
+            <p>{params.year} года</p>
           </div>
         </div>
         <div className="params__param">
@@ -71,7 +71,7 @@ export default function CarParams({ car }) {
             <p>Состояние</p>
           </div>
           <div className="params__value">
-            <p>{car.condition}</p>
+            <p>{params.condition}</p>
           </div>
         </div>
       </div>

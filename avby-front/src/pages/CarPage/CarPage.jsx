@@ -1,38 +1,44 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
-import { getCar } from "../../constants/api_urls.js";
 
 import "./CarPage.css";
 import CarParams from "./CarParams/CarParams.jsx";
+import favorites_svg from "../../assets/favorites.svg";
+import message_svg from "../../assets/messages.svg";
 import car_logo from "../../assets/car-logo.svg";
 import PhotoSlider from "./PhotoSlider/Slider.jsx";
-import CarsPage from "../CarsPage/CarsPage.jsx";
+import Loader from "../../components/ClipLoader/Loader.jsx";
+import ModalWindowContacts from "../../components/ModalsWindow/Modal.jsx";
+import CarsList from "../../components/CarsList/CarsList.jsx";
+import { getCar } from "../../services/APIService.js";
 
 export default function CarPage({ title }) {
-  const { brand, model, id } =  useParams(); // Получение инфы по машине
-  const [car, setCar] = useState();
-  const { token, isLoggedIn } = useContext(AuthContext);
+  const { brand, model, id } = useParams(); // Получение инфы по машине
+
+  const [car, setCar] = useState(); // хук состояния машины
+  const [loading, setLoading] = useState(false);
+
+  const [modalActive, setModalActive] = useState(false);
 
   const fetchCar = useCallback(async () => {
     try {
-      const response = await getCar(id, brand, model);
+      const response = await getCar(id);
       console.log(response.data);
-      const carData = response.data;
-      document.title = carData.name || title;
-      setCar(carData);
-    } catch {
-      // No need to log the error here, it will be caught by a global error boundary.
+      document.title = response.data.name || title;
+      setCar(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
     }
-  }, [id, brand, model,title]);
+  }, []);
 
+  // Загрузка машины при первом рендеринге страницы
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchCar();
-    }
-  }, [id, isLoggedIn, token]);
+    setLoading(true);
+    fetchCar();
+  }, [id]);
 
-  return isLoggedIn ? (
+  return (
     <>
       {car ? (
         <>
@@ -40,14 +46,14 @@ export default function CarPage({ title }) {
             <div className="crumbs">
               <ol className="breadcrumbs-list">
                 <li className="breadcrumb-item">
-                  <Link to="/" title="Все машины" className="crumbs__item">
+                  <Link to="/cars" title="Все машины" className="crumbs__item">
                     Все машины
                   </Link>
                 </li>
                 <li className="breadcrumb-item">
                   <Link
                     to={`/cars/${brand}`}
-                    title="Бренд"
+                    title="Марка"
                     className="crumbs__item"
                   >
                     {car.brand.name}
@@ -75,7 +81,7 @@ export default function CarPage({ title }) {
               </div>
               <div className="car__title-tags">
                 <span className="car__title-tags count-views">
-                  <p>Просмотров: 1</p>
+                  <p>Просмотров: {car.views_count}</p>
                 </span>
                 <span className="car__title-tags car-place">
                   <p>
@@ -95,14 +101,22 @@ export default function CarPage({ title }) {
               <div className="car-info__right">
                 <div className="car-main price">
                   <div className="car-main car_all_price">
-                    <span className="price__byn">{car.price} BYN</span>
+                    <span className="price__byn">
+                      {Math.floor(car.price)} руб
+                    </span>
+                    <span className="price__usd">
+                      ≈{Math.floor(car.price / 3.26)} $
+                    </span>
                   </div>
                 </div>
-                <CarParams car={car} />
+                <CarParams params={car} />
                 <div className="car-main owner-block">
                   <div className="owner-info">
                     <div className="owner-info__avatar">
-                      <img src={car.seller.image || car_logo} alt="owner_profile" />
+                      <img
+                        src={car.seller.image || car_logo}
+                        alt="owner_profile"
+                      />
                       <div className="owner-info__name">
                         <h3 className="owner__name">{car.seller.username}</h3>
                         <span className="owner__city">
@@ -113,10 +127,24 @@ export default function CarPage({ title }) {
                   </div>
                   <div className="car-main__btn">
                     <div className="show-contact__btn">
-                      <button>Показать контакты</button>
+                      <button onClick={() => setModalActive(true)}>
+                        Показать контакты
+                      </button>
                     </div>
-                    <div className="send-message__btn">
-                      <button>Написать сообщение</button>
+                    <ModalWindowContacts
+                      active={modalActive}
+                      setActive={setModalActive}
+                      user={car.seller}
+                    />
+                    <div className="send-message-user">
+                      <a className="send-message__btn" href="">
+                        <img src={message_svg} alt="написать сообщение" />
+                      </a>
+                    </div>
+                    <div className="add_favorite__btn">
+                      <span className="bookmarks">
+                        <img src={favorites_svg} alt="Добавить и избранное" />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -132,13 +160,21 @@ export default function CarPage({ title }) {
                 </div>
               </div>
             </div>
+            <div className="container">
+            <div className="car-info__description">
+                <div className="technical-description">
+                  <h3 className="car-info__title">Похожие машины</h3>
+                  <div className="car-info__text" style={{ width: "100%" }}>
+                  <CarsList cars={car.similar_cars} />
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
         </>
       ) : (
-        <p>Загрузка...</p>
+        <Loader loading={loading} />
       )}
     </>
-  ) : (
-    <p>Вы не авторизированы!</p>
   );
 }

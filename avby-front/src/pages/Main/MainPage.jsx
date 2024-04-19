@@ -1,11 +1,12 @@
 import "./MainPage.css";
 import { useState, useEffect } from "react";
-import { getCars } from "../../constants/api_urls";
-import CarsList from "../../components/CarsList/CarsList";
-import SearchPanel from "../../components/SearchPanel/SearchPanel";
-import lada from "../../assets/lada.webp";
 import { Link } from "react-router-dom";
-import CarsPage from "../CarsPage/CarsPage";
+
+import { getCarsList } from "../../services/APIService";
+import CarsList from "../../components/CarsList/CarsList";
+import lada from "../../assets/lada.webp";
+import Loader from "../../components/ClipLoader/Loader";
+
 function getCorrectEnding(number) {
   const lastDigit = number % 10;
   const lastTwoDigits = number % 100;
@@ -54,6 +55,7 @@ function SideBar() {
   );
 }
 
+// компонент отвечающий за отображение всех машин
 function ShowAllCarsComponent({ show, loadMoreCars, page }) {
   return show ? (
     <div className="show__all-cars">
@@ -72,21 +74,26 @@ function ShowAllCarsComponent({ show, loadMoreCars, page }) {
   );
 }
 
+
 function MainCarBlock({ showAll, filters }) {
   const [cars, setCars] = useState([]);
   const [totalCars, setTotalCars] = useState(0);
+
   const [page, setPage] = useState(1);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [error, setError] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
 
   // Получение списка машин
   useEffect(() => {
     if (!isFirstRender) {
+      setLoading(true);
       fetchCars();
     } else {
       setIsFirstRender(false);
     }
-  }, [page, isFirstRender, filters]);
+  }, [page, isFirstRender]);
 
   const loadMoreCars = () => {
     setPage((prevPage) => prevPage + 1);
@@ -94,19 +101,28 @@ function MainCarBlock({ showAll, filters }) {
 
   const fetchCars = async () => {
     try {
-      const response = await getCars(page, filters);
+      const response = await getCarsList(page, filters);
       if (response.status === 200) {
         setTotalCars(response.data.count);
         setCars((prevCars) => [...prevCars, ...response.data.results]);
       } else {
-        setError(response.data);
+        console.log(response);
+        setMessage(response.message);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.log(error);
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (message) {
+    return <h3>{message}</h3>;
+  }
   return (
     <div className="main__block">
+      {loading && <Loader loading={true}/>}
       <div className="layout__main">
         {/*<SearchPanel /> */}
         <section className="section__cars">
@@ -116,9 +132,9 @@ function MainCarBlock({ showAll, filters }) {
             </p>
             <select placeholder="Сортировать">
               <option value="">активные</option>
-              <option value="">Новые объявления</option>
-              <option value="">дешевые</option>
-              <option value="">дорогие</option>
+              <option value="new">Новые объявления</option>
+              <option value="cheap">дешевые</option>
+              <option value="expensive">дорогие</option>
             </select>
           </div>
           <CarsList cars={cars} />
@@ -135,16 +151,14 @@ function MainCarBlock({ showAll, filters }) {
 }
 
 export default function MainPage({ title }) {
-  
   document.title = title;
 
   return (
     <>
       <TitleMainSection />
-      <MainCarBlock showAll={false}/>
+      <MainCarBlock showAll={false} />
     </>
   );
 }
 
-
-export {MainCarBlock, TitleMainSection}
+export { MainCarBlock, TitleMainSection };

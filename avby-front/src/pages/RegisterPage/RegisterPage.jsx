@@ -1,7 +1,8 @@
 import { useContext, useState, useCallback } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { regUser } from "../../constants/api_urls";
+import { Link,useNavigate } from "react-router-dom";
+
+import { loginUser } from "../../services/APIService";
 import "./Register.css";
 
 export default function RegisterPage({ title }) {
@@ -25,7 +26,7 @@ export default function RegisterPage({ title }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await verityUser(username, password);
+      const response = await loginUser(username, password);
       if (response.status === 200) {
         login(response.data.access, response.data.refresh);
         setMessage("");
@@ -53,7 +54,7 @@ export default function RegisterPage({ title }) {
           <h1>Регистрация</h1>
         </div>
         {message && <p className="login-error">{message}</p>}
-        <form onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
           <div className="reg-name">
             <h3>Имя пользователя:</h3>
             <input

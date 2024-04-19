@@ -6,7 +6,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { getUser } from "../../constants/api_urls";
+import { getUser } from "../../services/APIService";
 import "./Header.css";
 
 function AuthButton() {
@@ -19,15 +19,15 @@ function AuthButton() {
     useEffect(() => {
       const fetchUser = async () => {
         try {
-          const response = await getUser(user_id, jwsToken);
+          const response = await getUser(user_id, jwsToken)
           setUser(response.data);
         } catch (error) {
-          setError(error.message);
+          setMessage(error.message);
         }
       };
   
       fetchUser();
-    }, [user_id, jwsToken]);
+    }, [user_id, jwsToken, isLoggedIn]);
   
     return !isLoggedIn ? (
       <div className="header__profile btn--enter" title="login">

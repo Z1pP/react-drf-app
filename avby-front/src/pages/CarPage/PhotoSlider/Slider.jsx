@@ -1,6 +1,6 @@
 import React from 'react';
-import './Slider.css';
 import Carousel from 'react-gallery-carousel';
+import 'react-gallery-carousel/dist/index.css';
 
 const PhotoSlider = ({ photos }) => {
   
@@ -9,7 +9,13 @@ const PhotoSlider = ({ photos }) => {
   }));
 
   return (
-    <Carousel images={images} style={{ height: "100%", width: "100%"}} />  
+    <div className='carousel-container'>
+    <Carousel
+      style={{width: '80%'}}
+      className='framed-carousel'
+      images={images}
+    />
+  </div>
   );
 };
 

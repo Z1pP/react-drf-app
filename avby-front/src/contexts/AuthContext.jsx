@@ -9,9 +9,15 @@ function AuthProvider(props) {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedRefreshToken = localStorage.getItem("refreshToken");
     if (storedToken) {
       setIsLoggedIn(true);
       setToken(storedToken);
+
+    }
+
+    if (storedRefreshToken){
+      setRefreshToken(storedRefreshToken)
     }
   }, []); // Пустой массив в качестве второго аргумента означает, что эффект будет выполняться только при первом рендеринге
 
@@ -20,7 +26,7 @@ function AuthProvider(props) {
     setToken(accessToken);
     setRefreshToken(refreshToken);
     localStorage.setItem("token", accessToken);
-    // Если вы планируете хранить refreshToken в localStorage, убедитесь, что это безопасно
+    localStorage.setItem("refreshToken", refreshToken)
   };
 
   const logout = () => {
@@ -33,8 +39,6 @@ function AuthProvider(props) {
 
   const value = {
     isLoggedIn,
-    token,
-    refreshToken,
     login,
     logout,
   };

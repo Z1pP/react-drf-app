@@ -67,8 +67,14 @@
     max-width: 1110px;
 }
 
+.car-info__left{
+    width: 70%;
+    padding: 20px;
+}
+
 .car-info__right{
-    width: 28%;
+    padding-top: 20px;
+    width: 30%;
     display: flex;
     flex-direction: column;
 }
@@ -77,11 +83,11 @@
     padding: 0;
     margin: 0;
     padding-right: 20px;
-    margin-bottom: 20px;
 }
 
 .car-main.car_all_price{
     display: flex;
+    align-items: center;
 }
 
 .price__byn{
@@ -90,10 +96,15 @@
     color: #1967d2;
 }
 
+span.price__usd{
+    margin: 0;
+    margin-left: 12px;
+}
+
 .car_main.params{
     border-radius: 0;
     box-shadow: none;
-    padding: 20px;
+    padding: 10px 20px;
     padding-left: 0;
 }
 
@@ -130,6 +141,7 @@
 }
 
 h3.owner__name{
+    margin: 0;
     margin-bottom: 3px;
     font-weight: 400;
 }
@@ -141,17 +153,20 @@ span.owner__city{
 
 .car-main__btn{
     display: flex;
+    align-items: center;
 }
 
 .show-contact__btn{
-    height: 41px;
-    
+    height: 100%;
+
 }
 
 .show-contact__btn button{
+    padding: 10px;
     font-size: 15px;
     color: white;
     background: #1967d2;
+    border: none;
     border-radius: 5px;
     text-align: center;
     width: 100%;
@@ -162,15 +177,49 @@ span.owner__city{
     justify-content: center;
 }
 
-.send-message__btn button{
-    display: flex;
-    color: white;
-    align-items: center;
-    justify-content: center;
-    background: #1967d2;
-    margin-left: 10px;
+.show-contact__btn button:hover{
+    background: #0f4b8e;
 }
 
+.send-message-user{
+    text-align: center;
+}
+
+.send-message__btn{
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-left: 10px;
+    background: #8080808e;
+    border-radius: 5px;
+}
+
+.send-message__btn:hover{
+    background: #808080;
+}
+
+.send-message__btn img{
+    width: 25px;
+}
+
+.add_favorite__btn{
+    
+}
+
+.bookmarks{
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    padding: 8px;
+    margin-left: 10px;
+    background: #8080803f;
+    border-radius: 5px;
+}
+
+
+.bookmarks img{
+    width: 25px;
+}
 .car-info__description{
     width: 100%;
     padding: 0;

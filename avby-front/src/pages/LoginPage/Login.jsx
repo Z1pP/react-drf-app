@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import { verityUser } from "../../constants/api_urls";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { loginUser } from "../../services/APIService";
 import "./Login.css";
 
 function LoginPage() {
@@ -14,20 +14,18 @@ function LoginPage() {
   // Обработка действия отправки формы
   const handleSubmit = async (event) => {
     event.preventDefault();
-      await verityUser(username, password)
-      .then((responce) => {
-        if (responce.data) {
-          login(responce.data.access, responce.data.refresh);
-          setMessage("");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          setMessage("Неверный логин или пароль");
-        } else {
-          setMessage("Произошла ошибка при входе");
-        }
-      })
+    try {
+      const response = await loginUser(username, password)
+      if (response.status === 200){
+        login(response.data.access, response.data.refresh)
+        setMessage("Успешно!")
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401){
+        setMessage("Ввели не верный логин или пароль")
+
+      }
+    } 
   };
 
   if (isLoggedIn) {
@@ -43,10 +41,11 @@ function LoginPage() {
         {message ? 
           <p className="login-error">{message}</p>
         : <></>}
-        <form onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="login-name">
             <h3>Имя пользователя:</h3>
             <input
+            className="login__input-name"
               type="text"
               id="username"
               value={username}
@@ -58,6 +57,7 @@ function LoginPage() {
           <div className="login-password">
             <h3>Пароль:</h3>
             <input
+            className="login__input-password"
               type="password"
               id="password"
               value={password}
