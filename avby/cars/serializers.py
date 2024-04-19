@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from rest_framework import serializers
+from rest_framework.fields import empty
+
 from .models import Car, CarPhoto, CarBrand, CarModel
 
 
@@ -35,7 +37,7 @@ class CarModelSerializer(serializers.ModelSerializer):
 class CarSerializer(serializers.ModelSerializer):
     brand = CarBrandSerializer(required=False)
     model = CarModelSerializer(required=False)
-    photos = CarPhotoSerializer(source='carphoto_set', many=True, required=False)
+    photos = CarPhotoSerializer(source='carphoto_set', many=True)
     seller = CarSellerSerializer(required=False)
 
     class Meta:
@@ -43,13 +45,37 @@ class CarSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
-    def is_valid(self, *, raise_exception=False):
-        self._validate_unique = False
-        data = self.initial_data
-        brand = data.get('brand')
-        model = data.get('model')
-        brand, _ = CarBrand.objects.get_or_create(name=brand, slug=slugify(brand))
-        model, _ = CarModel.objects.get_or_create(name=model, slug=slugify(model))
 
+class CarCreateSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name')
+    model = serializers.CharField(source='model.name')
+    photos = serializers.ListField(source='carphoto_set', child=serializers.ImageField())
+    seller = serializers.CharField(source='seller.id')
+    class Meta:
+        model = Car
+        fields = ('brand', 'model', 'photos', 'seller', 'name', 'engine_capacity', 'fuel_type', 'drive_type',
+                  'transmission_type', 'car_body', 'milage', 'year', 'condition', 'color', 'description', 'price')
 
-        return super().is_valid(raise_exception=raise_exception)
+    def create(self, validated_data):
+        photos = validated_data.pop('carphoto_set')
+        brand_slug = validated_data.pop('brand')['name']
+        model_slug = validated_data.pop('model')['name']
+        seller_id = validated_data.pop('seller')['id']
+
+        try:
+            brand_obj = CarBrand.objects.get(name=brand_slug)
+            model_obj = CarModel.objects.get(name=model_slug)
+            seller_obj = User.objects.get(id=seller_id)
+        except CarBrand.DoesNotExist:
+            raise serializers.ValidationError(f"Brand with slug '{brand_slug}' does not exist.")
+        except CarModel.DoesNotExist:
+            raise serializers.ValidationError(f"Model with slug '{model_slug}' for brand '{brand_obj.name}' does not exist.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError(f"User with id '{seller_id}' does not exist.")
+
+        car = Car.objects.create(brand=brand_obj, model=model_obj, seller=seller_obj, **validated_data)
+
+        for photo in photos:
+            CarPhoto.objects.create(car=car, photo=photo)
+
+        return car
