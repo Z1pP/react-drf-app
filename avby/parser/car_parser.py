@@ -5,7 +5,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'avby.settings')
 django.setup()
 
 import requests
-import random
 from typing import List
 from bs4 import BeautifulSoup
 from decimal import Decimal, InvalidOperation
@@ -55,11 +54,12 @@ def get_car_links(htmls: List[requests.Response], items_count: int = 1):
 def get_cars_html(car_links: List[str]):
     cars_html = []
     for link in car_links:
-
-        if CarLink.objects.filter(link=link).exists(): # Проверка что машина в бд уже есть
+        # Проверка на наличие машины в бд
+        if CarLink.objects.filter(link=link).exists():
             print("Такая машина уже существует")
             continue
-        CarLink.objects.create(link=link) # Добавление линка машины в бд
+        # Добавление линка машины в бд
+        CarLink.objects.create(link=link)
 
         url = HOME_URL + link
         responce = requests.get(url)
@@ -71,7 +71,6 @@ def get_cars_html(car_links: List[str]):
 
 
 def get_cars_info(cars_html: List[requests.Response], return_result: bool = False):
-    cars = []
     for html in cars_html:
         soup = BeautifulSoup(html.text, "html.parser")
 
@@ -142,7 +141,7 @@ def start_parsing():
         db = DbService()
 
         htmls = get_htmls(pages_count=10)
-        car_links = get_car_links(htmls, items_count=10)
+        car_links = get_car_links(htmls, items_count=50)
         cars_html = get_cars_html(car_links)
         get_cars_info(cars_html)
     except Exception as e:
