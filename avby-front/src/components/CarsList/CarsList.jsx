@@ -1,6 +1,9 @@
+import { useSelector } from "react-redux";
+// components
 import CarItem from "../CarItem/CarItem.jsx";
 
-export default function CarsList({ cars }) {
+export default function CarsList({cars}) {
+
   
   return cars ? (
     <div className="list-cars">

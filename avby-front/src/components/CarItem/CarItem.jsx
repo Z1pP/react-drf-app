@@ -1,14 +1,21 @@
-import car_logo from "../../assets/car-logo.svg";
 import { Link } from "react-router-dom";
+// images
+import car_logo from "../../assets/car-logo.svg";
 
+
+
+const EXCHANGE_RATE = 3.26;
 
 // Время публикации объявления
-const AddingTime = (createdTime) => {
-  const c_Time = new Date(createdTime).getTime();
-  const currentTime = new Date().getTime();
-  const timePassed = currentTime - c_Time;
+const formatTimeElapsed = (createdTime) => {
+  const createdDate = new Date(createdTime);
 
-  const seconds = Math.floor(timePassed / 1000);
+  if (isNaN(createdDate.getTime())) {
+    return 'Invalid date';
+  }
+
+  const timeDiff = Date.now() - createdDate.getTime();
+  const seconds = Math.floor(timeDiff / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
@@ -26,44 +33,62 @@ const AddingTime = (createdTime) => {
 
 export default function CarItem({ car }) {
 
-  // извлечение бренда и модели
-  const id = car.id
-  const brand = car.brand.slug
-  const model = car.model.slug
-  // извлечение первого фото
-  const photo = car.photos[0].photo;
+  if (!car){
+    return null; // Если нет объявления, вернуть null
+  }
+
+  const {
+    id,
+    brand,
+    model,
+    photos,
+    name,
+    engine_capacity,
+    fuel_type,
+    year,
+    milage,
+    transmission_type,
+    car_body,
+    price,
+    seller,
+    created,
+  } = car;
+
+  const firstPhoto = photos[0].photo; // извлечение первого фото
+  const formattedPriceBYN = `${Math.floor(price)} руб.`;
+  const formattedPriceUSD = `${Math.floor(price / EXCHANGE_RATE)} $`;
 
   return (
     <div className="block__car">
-      <Link to={`/cars/${brand}/${model}/${id}`}>
+      <Link to={`/cars/${brand.slug}/${model.slug}/${id}`}>
         <div className="i-car">
           <div className="car__img">
             <picture>
-              <img src={photo || car_logo} alt={car.slug} />
+              <img src={firstPhoto || car_logo} alt={car.slug} />
             </picture>
           </div>
           <div className="car__text">
             <div className="car__info">
               <div className="list__info">
                 <div className="title_-list">
-                  <h3 className="car__title-name">{car.name}</h3>
+                  <h3 className="car__title-name">{name}</h3>
                   <div className="car-in">
                     <div className="list__params">
-                      {car.engine_capacity} л. / {car.fuel_type} / {car.year} г.
+                      {engine_capacity} л. / {fuel_type} / {year} г.
                     </div>
                     <div className="list__params">
-                      {car.milage} км. / {car.transmission_type} / {car.car_body}
+                      {milage} км. / {transmission_type} / {car_body}
                     </div>
                   </div>
                 </div>
                 <div className="title_-list-price">
-                  <span className="price__byn">{Math.floor(car.price)} руб</span>
-                  <span className="price__usd">≈{Math.floor(car.price / 3.26)} $</span>
+                  <span className="price__byn">{formattedPriceBYN}</span>
+                  <span className="price__usd">≈{formattedPriceUSD}</span>
                 </div>
               </div>
               <span className="item-car-city">
-                <div className="car__city">{car.seller.city}</div>
-                <span className="time-ago">{AddingTime(car.created)}</span>
+                <div className="car__city">{seller.city}</div>
+                <span className="time-ago">{formatTimeElapsed(created)}</span>
               </span>
             </div>
           </div>

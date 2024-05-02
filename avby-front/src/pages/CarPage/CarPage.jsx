@@ -1,58 +1,67 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-
-import "./CarPage.css";
-import CarParams from "./CarParams/CarParams.jsx";
+import { useDispatch } from "react-redux";
+// images
 import favorites_svg from "../../assets/favorites.svg";
 import message_svg from "../../assets/messages.svg";
 import car_logo from "../../assets/car-logo.svg";
-import PhotoSlider from "./PhotoSlider/Slider.jsx";
+// components
+import CarParams from "../../components/CarParams/CarParams.jsx";
+import PhotoSlider from "../../components/PhotoSlider/Slider.jsx";
 import Loader from "../../components/ClipLoader/Loader.jsx";
 import ModalWindowContacts from "../../components/ModalsWindow/Modal.jsx";
 import CarsList from "../../components/CarsList/CarsList.jsx";
+// services
 import { getCar } from "../../services/APIService.js";
+// context
+import "./CarPage.css";
 
-export default function CarPage({ title }) {
-  const { brand, model, id } = useParams(); // Получение инфы по машине
+const title = "Машина";
 
+export default function CarPage() {
+  const { id } = useParams(); // Получение инфы по машине
   const [car, setCar] = useState(); // хук состояния машины
   const [loading, setLoading] = useState(false);
-
   const [modalActive, setModalActive] = useState(false);
 
-  const fetchCar = useCallback(async () => {
+  const dispatch = useDispatch();
+
+  const fetchCar = async () => {
     try {
+      setLoading(true);
       const response = await getCar(id);
-      console.log(response.data);
-      document.title = response.data.name || title;
       setCar(response.data);
-      setLoading(false);
+      document.title = response.data.name || title;
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
   // Загрузка машины при первом рендеринге страницы
   useEffect(() => {
-    setLoading(true);
+    console.log("URL изменен, перезагружаем страницу");
     fetchCar();
   }, [id]);
 
+
+
   return (
-    <>
+    <div>
       {car ? (
-        <>
+        <div>
           <div className="container" style={{ maxWidth: "1133px" }}>
             <div className="crumbs">
               <ol className="breadcrumbs-list">
                 <li className="breadcrumb-item">
-                  <Link to="/cars" title="Все машины" className="crumbs__item">
+                  <Link to="/" title="Все машины" className="crumbs__item">
                     Все машины
                   </Link>
                 </li>
                 <li className="breadcrumb-item">
                   <Link
-                    to={`/cars/${brand}`}
+                    to={`/cars/${car.brand.slug}`}
                     title="Марка"
                     className="crumbs__item"
                   >
@@ -61,7 +70,7 @@ export default function CarPage({ title }) {
                 </li>
                 <li className="breadcrumb-item">
                   <Link
-                    to={`/cars/${brand}/${model}`}
+                    to={`/cars/${car.brand.slug}/${car.model.slug}`}
                     title="Модель"
                     className="crumbs__item"
                   >
@@ -109,7 +118,9 @@ export default function CarPage({ title }) {
                     </span>
                   </div>
                 </div>
+
                 <CarParams params={car} />
+
                 <div className="car-main owner-block">
                   <div className="owner-info">
                     <div className="owner-info__avatar">
@@ -131,11 +142,13 @@ export default function CarPage({ title }) {
                         Показать контакты
                       </button>
                     </div>
+
                     <ModalWindowContacts
                       active={modalActive}
                       setActive={setModalActive}
                       user={car.seller}
                     />
+
                     <div className="send-message-user">
                       <a className="send-message__btn" href="">
                         <img src={message_svg} alt="написать сообщение" />
@@ -161,20 +174,20 @@ export default function CarPage({ title }) {
               </div>
             </div>
             <div className="container">
-            <div className="car-info__description">
+              <div className="car-info__description">
                 <div className="technical-description">
                   <h3 className="car-info__title">Похожие машины</h3>
                   <div className="car-info__text" style={{ width: "100%" }}>
-                  <CarsList cars={car.similar_cars} />
+                    <CarsList cars={car.similar_cars} />
                   </div>
                 </div>
               </div>
             </div>
           </section>
-        </>
+        </div>
       ) : (
         <Loader loading={loading} />
       )}
-    </>
+    </div>
   );
 }

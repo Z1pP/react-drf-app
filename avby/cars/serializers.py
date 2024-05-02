@@ -34,6 +34,7 @@ class CarModelSerializer(serializers.ModelSerializer):
         model = CarModel
         fields = ('name', 'slug')
 
+
 class CarSerializer(serializers.ModelSerializer):
     brand = CarBrandSerializer(required=False)
     model = CarModelSerializer(required=False)
@@ -43,7 +44,6 @@ class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = ('__all__')
-
 
 
 class CarCreateSerializer(serializers.ModelSerializer):

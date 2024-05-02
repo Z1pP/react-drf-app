@@ -1,46 +1,45 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext.jsx";
-import { useEffect } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import Header from "./components/header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import MainPage from "./pages/Main/MainPage.jsx";
-import LoginPage from "./pages/LoginPage/Login.jsx";
-import Logout from "./pages/LoginPage/Logout.jsx";
-import RegisterPage from "./pages/RegisterPage/RegisterPage.jsx";
-import Profile from "./pages/ProfilePage/ProfilePage.jsx";
-import CarPage from "./pages/CarPage/CarPage.jsx";
-import CarsPage from "./pages/CarsPage/CarsPage.jsx";
+import BodyLayout from "./components/Body/BodyLayout.jsx";
+import MessageBlock from "./components/MessageBlocks/MessageBlock.jsx";
+
+import { verifyToken } from "./services/APIService.js";
+import { verifyUser } from "./Redux/reducers/authSlice.js";
+import { messageInfoAction } from "./Redux/reducers/messageInfoSlice.js";
+
 import "./App.css";
 
 export default function App() {
-  
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+
+  React.useEffect(async () => {
+    if (token) {
+      try {
+        const responce = await verifyToken(token);
+        dispatch(verifyUser(responce.data));
+      } catch (error) {
+        dispatch(
+          messageInfoAction({
+            type: "error",
+            text: "Токен устарел, пожалуйста авторизуйтесь заново",
+          })
+        );
+      }
+    }
+  }, [token, dispatch]);
+
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<MainPage title="Главная страница" />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="logout" element={<Logout />} />
-          <Route path="/register" element={<RegisterPage title="Регистрация" />} />
-          <Route path="/profile" element={<Profile title="Мой профиль" />} />
-          <Route path="/cars" element={<CarsPage title="Купить авто" />} />
-          <Route
-            path="/cars/:brand"
-            element={<CarsPage/>}
-          />
-          <Route
-            path="/cars/:brand/:model"
-            element={<CarsPage/>}
-          />
-          <Route
-            path="/cars/:brand/:model/:id"
-            element={<CarPage title="Машина" />}
-          />
-        </Routes>
-        <Footer />
-      </AuthProvider>
+      <MessageBlock />
+      <Header />
+      <BodyLayout />
+      <Footer />
     </BrowserRouter>
   );
 }
-

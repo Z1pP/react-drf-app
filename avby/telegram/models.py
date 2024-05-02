@@ -2,8 +2,8 @@ from django.db import models
 
 
 class TgUser(models.Model):
-    tg_id = models.PositiveIntegerField(primary_key=True, unique=True, verbose_name='Телеграм ID')
-    username = models.CharField(max_length=100, verbose_name='Имя пользователя')
+    tg_id = models.PositiveIntegerField(primary_key=True, unique=True, verbose_name='Телеграм ID', blank=True)
+    username = models.CharField(max_length=100, verbose_name='Имя пользователя', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, verbose_name='Добавлен')
 
     class Meta:

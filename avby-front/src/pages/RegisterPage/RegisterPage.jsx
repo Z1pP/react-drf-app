@@ -1,12 +1,28 @@
 import { useContext, useState, useCallback } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
-import { Link,useNavigate } from "react-router-dom";
-
-import { loginUser } from "../../services/APIService";
+import { Link, useNavigate } from "react-router-dom";
+// context
+import { useSelector, useDispatch } from "react-redux";
+// context
+import { login } from "../../Redux/reducers/authSlice";
+// services
+import { authUser } from "../../services/APIService";
+// components
 import "./Register.css";
 
-export default function RegisterPage({ title }) {
-  const { isLoggedIn } = useContext(AuthContext);
+const title = "Регистрация";
+
+function CheckPassword(password, password2) {
+  if (password === password2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export default function RegisterPage() {
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  const dispath = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -14,7 +30,6 @@ export default function RegisterPage({ title }) {
     password: "",
     password2: "",
   });
-  const [message, setMessage] = useState("");
 
   if (isLoggedIn) {
     navigate("/");
@@ -25,19 +40,27 @@ export default function RegisterPage({ title }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const { username, email, password, password2 } = formData;
+
+    if (!CheckPassword(password, password2)) {
+      setMessage({
+        type: "error",
+        text: "Пароли не совпадают",
+      });
+      return;
+    }
     try {
-      const response = await loginUser(username, password);
-      if (response.status === 200) {
-        login(response.data.access, response.data.refresh);
-        setMessage("");
-      } else {
-        setMessage("Произошла ошибка при входе");
-      }
+      const response = await authUser(username, email, password);
+      dispath(login(response.data.access, response.data.refresh))
+      navigate("/login");
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setMessage("Неверный логин или пароль");
+        console.log(error);
+      } else if (error.response && error.response.status === 400) {
+        console.log(error);
       } else {
-        setMessage("Произошла ошибка при входе");
+        console.log(error);
       }
     }
   };
@@ -53,7 +76,6 @@ export default function RegisterPage({ title }) {
         <div className="reg-header">
           <h1>Регистрация</h1>
         </div>
-        {message && <p className="login-error">{message}</p>}
         <form className="form" onSubmit={handleSubmit}>
           <div className="reg-name">
             <h3>Имя пользователя:</h3>
@@ -111,5 +133,3 @@ export default function RegisterPage({ title }) {
     </div>
   );
 }
-
-

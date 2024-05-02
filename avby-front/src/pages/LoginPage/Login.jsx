@@ -1,31 +1,39 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import React from "react";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+// components
+import MessageBlock from "../../components/MessageBlocks/MessageBlock";
+// context
+import { login } from "../../Redux/reducers/authSlice";
+// services
 import { loginUser } from "../../services/APIService";
 import "./Login.css";
 
-function LoginPage() {
+export default function LoginPage() {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const { login, isLoggedIn } = useContext(AuthContext);
 
+  const dispatch = useDispatch();
+  
   // Обработка действия отправки формы
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await loginUser(username, password)
-      if (response.status === 200){
-        login(response.data.access, response.data.refresh)
-        setMessage("Успешно!")
+      const response = await loginUser(username, password);
+      if (response.status === 200) {
+        dispatch(login({
+          accessToken: response.data.access,
+          refreshToken: response.data.refresh,
+        }));
       }
     } catch (error) {
-      if (error.response && error.response.status === 401){
-        setMessage("Ввели не верный логин или пароль")
-
+      if (error.response && error.response.status === 401) {
+        console.log(error)
       }
-    } 
+    }
   };
 
   if (isLoggedIn) {
@@ -38,14 +46,11 @@ function LoginPage() {
         <div className="login-header">
           <h1>Войти</h1>
         </div>
-        {message ? 
-          <p className="login-error">{message}</p>
-        : <></>}
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="login-name">
             <h3>Имя пользователя:</h3>
             <input
-            className="login__input-name"
+              className="login__input-name"
               type="text"
               id="username"
               value={username}
@@ -57,7 +62,7 @@ function LoginPage() {
           <div className="login-password">
             <h3>Пароль:</h3>
             <input
-            className="login__input-password"
+              className="login__input-password"
               type="password"
               id="password"
               value={password}
@@ -70,11 +75,11 @@ function LoginPage() {
           <div className="login-submit">
             <button type="submit">Войти</button>
           </div>
-          <Link className="login-register" to="/register">Регистрация</Link>
+          <Link className="login-register" to="/register">
+            Регистрация
+          </Link>
         </form>
       </div>
     </div>
   );
 }
-
-export default LoginPage;

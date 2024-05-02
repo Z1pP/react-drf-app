@@ -3,9 +3,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse
+from rest_framework import generics, status
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from .forms import FormSendMessage
 from .tasks import start_scheduler, send_postpone_message, send_message
+from .models import TgUser
+
 
 
 # Create your views here.
@@ -40,5 +45,20 @@ def send_tg_message(request):
     else:
         form = FormSendMessage()
     return render(request, 'admin/send_message.html', {'form': form})
+
+
+class DeleteTgProfileView(generics.DestroyAPIView):
+    permission_classes = (AllowAny,)
+    def delete(self, request, *args, **kwargs):
+        tg_id = self.kwargs.get('tg_id')
+        message = "Ваш профиль успешно удален!"
+        try:
+            user = TgUser.objects.get(tg_id=tg_id)
+            send_message(user.__dict__, message)
+            user.delete()
+            return Response({"message": "Телеграм профиль удален"},status=status.HTTP_200_OK)
+        except Exception:
+            return Response({"error": "Пользователь не найден"}, status=status.HTTP_404_NOT_FOUND)
+
 
 

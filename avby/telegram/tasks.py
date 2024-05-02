@@ -13,7 +13,7 @@ def send_postpone_message(user, text, send_time):
         print(f'Ошибка при планировании задачи: {e}')
 
 
-def send_message(user, text):
+def send_message(user: dict, text: str):
     user_id = user['tg_id']
     username = user['username']
     text = f"Пользователь @{username}: {text}"

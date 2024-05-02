@@ -44,7 +44,7 @@ class CarModel(models.Model):
 class Car(models.Model):
     name = models.CharField('Название автомобиля', max_length=100)
     model = models.ForeignKey(CarModel, on_delete=models.CASCADE, related_name='cars', verbose_name='Модель')
-    brand =  models.ForeignKey(CarBrand, on_delete=models.CASCADE, related_name='cars', verbose_name='Марка')
+    brand = models.ForeignKey(CarBrand, on_delete=models.CASCADE, related_name='cars', verbose_name='Марка')
     slug = models.SlugField('Слуг автомобиля', max_length=100, unique=False)
 
     # Характеристики авто

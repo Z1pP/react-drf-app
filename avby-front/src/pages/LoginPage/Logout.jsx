@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "../../Redux/reducers/authSlice";
 export default function Logout() {
-    const {logout} = useContext(AuthContext);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        logout();
+        dispatch(logout());
     },[])
 
     return (
