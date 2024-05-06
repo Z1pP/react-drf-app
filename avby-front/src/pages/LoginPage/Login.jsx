@@ -1,4 +1,5 @@
 import React from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -11,27 +12,31 @@ import { login } from "../../Redux/reducers/authSlice";
 import { loginUser } from "../../services/APIService";
 import "./Login.css";
 
+const key = "6Le7z9ApAAAAANIk2sx4Rd2ESetd5f95FyD9Sf07"
+
 export default function LoginPage() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
-  
+
   // Обработка действия отправки формы
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await loginUser(username, password);
       if (response.status === 200) {
-        dispatch(login({
-          accessToken: response.data.access,
-          refreshToken: response.data.refresh,
-        }));
+        dispatch(
+          login({
+            accessToken: response.data.access,
+            refreshToken: response.data.refresh,
+          })
+        );
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -71,6 +76,10 @@ export default function LoginPage() {
               required
             />
           </div>
+          <ReCAPTCHA
+            sitekey= {key}
+            onChange={() => {}}
+          />
           <br />
           <div className="login-submit">
             <button type="submit">Войти</button>

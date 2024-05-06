@@ -23,7 +23,6 @@ export default function Profile() {
   const { isLoggedIn, userId, token, refreshToken } = useSelector(
     (state) => state.auth
   );
-  const { user } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -106,7 +105,7 @@ export default function Profile() {
   }, [isLoggedIn, userIsUpdated]);
 
   const logoutFromProfile = () => {
-    logout();
+    dispatch(logout());
     navigate("/");
   };
 
