@@ -7,6 +7,7 @@ import Logout from "../../pages/LoginPage/Logout";
 import RegisterPage from "../../pages/RegisterPage/RegisterPage";
 import Profile from "../../pages/ProfilePage/ProfilePage";
 import CarPage from "../../pages/CarPage/CarPage";
+import SalePage from "../../pages/SalePage/SalePage";
 
 export default function BodyLayout() {
   return (
@@ -16,6 +17,7 @@ export default function BodyLayout() {
       <Route path="logout" element={<Logout />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/sale" element={<SalePage />} />
       <Route path="/cars/:brand/:model/:id" element={<CarPage/>} />
     </Routes>
   );
