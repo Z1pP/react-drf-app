@@ -14,20 +14,20 @@ class CarSellerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id','username','image','phone','country','city')
-
+        fields = ('id', 'username', 'image', 'phone', 'country', 'city')
 
 
 class CarPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarPhoto
-        fields = ('id','photo')
+        fields = ('id', 'photo')
 
 
 class CarBrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarBrand
         fields = ('name', 'slug')
+
 
 class CarModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,6 +51,7 @@ class CarCreateSerializer(serializers.ModelSerializer):
     model = serializers.CharField(source='model.name')
     photos = serializers.ListField(source='carphoto_set', child=serializers.ImageField())
     seller = serializers.CharField(source='seller.id')
+
     class Meta:
         model = Car
         fields = ('brand', 'model', 'photos', 'seller', 'name', 'engine_capacity', 'fuel_type', 'drive_type',
@@ -58,20 +59,13 @@ class CarCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         photos = validated_data.pop('carphoto_set')
-        brand_slug = validated_data.pop('brand')['name']
-        model_slug = validated_data.pop('model')['name']
+        brand_name = validated_data.pop('brand')['name']
+        model_name = validated_data.pop('model')['name']
         seller_id = validated_data.pop('seller')['id']
 
-        try:
-            brand_obj = CarBrand.objects.get(name=brand_slug)
-            model_obj = CarModel.objects.get(name=model_slug)
-            seller_obj = User.objects.get(id=seller_id)
-        except CarBrand.DoesNotExist:
-            raise serializers.ValidationError(f"Brand with slug '{brand_slug}' does not exist.")
-        except CarModel.DoesNotExist:
-            raise serializers.ValidationError(f"Model with slug '{model_slug}' for brand '{brand_obj.name}' does not exist.")
-        except User.DoesNotExist:
-            raise serializers.ValidationError(f"User with id '{seller_id}' does not exist.")
+        brand_obj, _ = CarBrand.objects.get_or_create(name=brand_name)
+        model_obj, _ = CarModel.objects.get_or_create(name=model_name, car_brand_id=brand_obj.id)
+        seller_obj = User.objects.get(id=seller_id)
 
         car = Car.objects.create(brand=brand_obj, model=model_obj, seller=seller_obj, **validated_data)
 

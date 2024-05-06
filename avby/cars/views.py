@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import generics, status
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Car, CarBrand, CarModel
 from .serializers import (
@@ -19,7 +21,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class CarListView(generics.ListAPIView):
-    queryset = Car.objects.all()
+    queryset = Car.objects.order_by('-created')
     serializer_class = CarSerializer
     permission_classes = (AllowAny,)
     pagination_class = StandardResultsSetPagination
@@ -79,13 +81,12 @@ class CarModelsByBrandListView(generics.ListAPIView):
 class CarCreateView(generics.CreateAPIView):
     queryset = Car.objects.all()
     serializer_class = CarCreateSerializer
-    permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = CarCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            car = serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -95,22 +96,25 @@ class CarUpdateView(generics.UpdateAPIView):
 
 
 class CarFilterListView(generics.ListAPIView):
-    queryset = Car.objects.all()
+    queryset = Car.objects.order_by('-created').select_related('brand', 'model')
     serializer_class = CarSerializer
     permission_classes = (AllowAny,)
     pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = {
+        'brand__name': ['exact'],
+        'model__name': ['exact'],
+        'year': ['gte', 'lte'],
+        'price': ['gte', 'lte'],
+        'engine_capacity': ['gte', 'lte'],
+        'car_body': ['exact'],
+        'drive_type': ['exact'],
+        'fuel_type': ['exact'],
+        'transmission_type': ['exact'],
+    }
+    search_fields = ['brand__name', 'model__name']
+    ordering_fields = ['price', 'year']
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        query_params = request.query_params
-        for field, value in query_params.items():
-            queryset = queryset.filter(**{field: value})
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 class CarsByUserIdListView(generics.ListAPIView):
     queryset = Car.objects.all()

@@ -32,9 +32,9 @@ class CarModel(models.Model):
         verbose_name = 'Модель автомобиля'
         verbose_name_plural = 'Модели автомобилей'
 
-    def save(selfs, *args, **kwargs):
-        if not selfs.slug:
-            selfs.slug = slugify(selfs.name)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
