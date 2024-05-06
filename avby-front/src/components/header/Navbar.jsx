@@ -16,10 +16,12 @@ import {
   removeAnnouncement,
   addNotification,
   removeNotification,
+  removeFromFavorite,
 } from "../../Redux/reducers/userSlice";
 // components
 import AnnouncementsModal from "../ModalsWindow/NavBarModalWindows/AnnoucementModal";
 import NotificationsModal from "../ModalsWindow/NavBarModalWindows/NotificationsModal";
+import FavoritesModal from "../ModalsWindow/NavBarModalWindows/FavoritesModal";
 import "./Header.css";
 
 const renderIfIsLoggedIn = (component) => {
@@ -129,12 +131,24 @@ function Announcement() {
 }
 
 function Favorites() {
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
+  
+  const handleModalToggle = () => {
+    setShowModal(!showModal);
+  };
+
+  const handleRemoveFavorite = (item) => {
+    dispatch(removeFromFavorite(item.id));
+  }
+
   return renderIfIsLoggedIn(
     <div className="header__profile btn--favorites" title="favorites">
-      <div className="header__profile-favorites">
+      <div className="header__profile-favorites" onClick={handleModalToggle}>
         <img src={favorites_svg} alt="favorites" />
       </div>
       <p>Избранное</p>
+      <FavoritesModal showModal={showModal} removeFavorite={handleRemoveFavorite}/>
     </div>
   );
 }

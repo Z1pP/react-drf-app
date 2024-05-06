@@ -11,7 +11,7 @@ export default function NotificationsModal({ showModal, notifications, removeNot
       <div className="modal__overlay">
         <h3>Мои уведомления</h3>
         <div className="content">
-          {notifications ? (
+          {notifications.length > 0 ? (
             notifications.map((item) => (
               <div className="item" key={item.id}>
                 <div className="item__left">
@@ -44,7 +44,7 @@ export default function NotificationsModal({ showModal, notifications, removeNot
               </div>
             ))
           ) : (
-            <p>У вас нет уведомлений</p>
+            <h4>У вас нет уведомлений</h4>
           )}
         </div>
       </div>
