@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  paramsForSearh: {},
+  paramsForSearch: {},
 };
 
 const filterSlice = createSlice({
@@ -9,7 +9,7 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     setParamsForSearch: (state, action) => {
-      state.params = action.payload;
+      state.paramsForSearch = action.payload;
     },
   },
 });

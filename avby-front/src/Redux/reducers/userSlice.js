@@ -36,11 +36,10 @@ export const userSlice = createSlice({
         (item) => item.id !== action.payload
       );
     },
-    setFavorites: (state, action) => {
-      state.favorites = action.payload;
-      state.isLoading = true;
+    addToFavorites: (state, action) => {
+      state.favorites.push(action.payload);
     },
-    removeFavorite: (state, action) => {
+    removeFromFavorite: (state, action) => {
       state.favorites = state.favorites.filter(
         (item) => item.id !== action.payload
       );
@@ -62,7 +61,14 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setAnnouncements, removeAnnouncement, addNotification, removeNotification } =
-  userSlice.actions;
+export const {
+  setUser,
+  setAnnouncements,
+  removeAnnouncement,
+  addNotification,
+  removeNotification,
+  addToFavorites,
+  removeFromFavorite,
+} = userSlice.actions;
 
 export default userSlice.reducer;

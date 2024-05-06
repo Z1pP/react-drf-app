@@ -26,13 +26,12 @@ export const carSlice = createSlice({
         setFilter: (state, action) => {
             state.filter = action.payload
         },
-        loadFilteredCars: (state, action) => {
-            state.carList = action.payload.cars
-            state.totalCars = action.payload.totalCars
+        clearCars: (state) => {
+            state.carList = []
         }
     }
 })
 
-export const { loadCars, loadCarById, setTotalCars, setFilter, loadFilteredCars } = carSlice.actions
+export const { loadCars, loadCarById, setTotalCars, setFilter, clearCars } = carSlice.actions
 
 export default carSlice.reducer

@@ -1,8 +1,6 @@
 // authReducer.js
 import { jwtDecode } from "jwt-decode";
 import { createSlice } from "@reduxjs/toolkit";
-// sercive
-import { verifyToken } from "../../services/APIService";
 
 // Начальное состояние
 const initialState = {
@@ -18,10 +16,8 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    verifyUser: (state, action) => {
+    verifyUser: (state) => {
       state.isLoggedIn = true;
-      state.token = action.payload.accessToken;
-      state.userId = jwtDecode(action.payload.accessToken).user_id;
     },
     login: (state, action) => {
       try {
