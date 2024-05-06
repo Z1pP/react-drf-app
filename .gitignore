@@ -1,2 +1,4 @@
 /avby/media/
 /avby/.env
+/avby/.idea
+/avby_fastapi

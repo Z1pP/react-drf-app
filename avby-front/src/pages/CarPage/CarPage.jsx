@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // images
 import favorites_svg from "../../assets/favorites.svg";
 import message_svg from "../../assets/messages.svg";
@@ -14,17 +14,23 @@ import CarsList from "../../components/CarsList/CarsList.jsx";
 // services
 import { getCar } from "../../services/APIService.js";
 // context
+import { addToFavorites, removeFromFavorite } from "../../Redux/reducers/userSlice.js";
+import { messageInfoAction } from "../../Redux/reducers/messageInfoSlice.js";
 import "./CarPage.css";
 
 const title = "Машина";
 
 export default function CarPage() {
+  const dispatch = useDispatch();
+  const { favorites, user } = useSelector((state) => state.user);
+
   const { id } = useParams(); // Получение инфы по машине
   const [car, setCar] = useState(); // хук состояния машины
   const [loading, setLoading] = useState(false);
   const [modalActive, setModalActive] = useState(false);
+  const [isFavorite, setIsFavorite] = useState();
 
-  const dispatch = useDispatch();
+  
 
   const fetchCar = async () => {
     try {
@@ -41,11 +47,27 @@ export default function CarPage() {
 
   // Загрузка машины при первом рендеринге страницы
   useEffect(() => {
+    if (car){
+      setIsFavorite(favorites.some((favorite) => favorite.id === car.id));
+    }
     console.log("URL изменен, перезагружаем страницу");
     fetchCar();
-  }, [id]);
+  }, [id, favorites]);
 
-
+  const handleFavoritesClick = () => {
+    if (car.seller.id === user.id) {
+      dispatch(messageInfoAction({
+        text: "Вы не можете добавить свою машину в избранное",
+        type: "error"
+      }))
+      return
+    }
+    if (isFavorite) {
+      dispatch(removeFromFavorite(car.id));
+    } else{
+      dispatch(addToFavorites(car));
+    }
+  }
 
   return (
     <div>
@@ -155,7 +177,7 @@ export default function CarPage() {
                       </a>
                     </div>
                     <div className="add_favorite__btn">
-                      <span className="bookmarks">
+                      <span className={`bookmarks ${isFavorite ? "active" : ""}`} onClick={handleFavoritesClick}>
                         <img src={favorites_svg} alt="Добавить и избранное" />
                       </span>
                     </div>

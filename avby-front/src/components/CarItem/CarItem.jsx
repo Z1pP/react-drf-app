@@ -33,6 +33,8 @@ const formatTimeElapsed = (createdTime) => {
 
 export default function CarItem({ car }) {
 
+
+
   if (!car){
     return null; // Если нет объявления, вернуть null
   }

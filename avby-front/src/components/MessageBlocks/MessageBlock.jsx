@@ -9,17 +9,18 @@ const MessageBlock = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (text) {
+    if (show) {
       setVisible(show);
     } else {
       setVisible(false);
+      dispatch(hideMessage());
     }
-  }, [text, show]);
+  }, [show]);
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(false), text ? 2000 : 0);
     return () => clearTimeout(timer);
-  }, [text]);
+  }, [text, setVisible]);
 
   return visible ? (
     <div className={`block__${type.toLowerCase()}`}>{text}</div>
