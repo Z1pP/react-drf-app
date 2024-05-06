@@ -1,29 +1,20 @@
 import React from "react";
+import { setParamsForSearch } from "../../Redux/reducers/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { getModelList } from "../../services/APIService";
 import { getParams } from "../../services/APIService";
-import { loadFilteredCars } from "../../Redux/reducers/carSlice";
-import { setParamsForSearch } from "../../Redux/reducers/filterSlice";
 import "./SearchPanel.css";
 
 export default function SearchPanel() {
+  const dispatch = useDispatch();
+  const { paramsForSearch } = useSelector((state) => state.filter);
+
   const [models, setModels] = React.useState([]);
   const [selectedBrand, setSelectedBrand] = React.useState("");
   const [selectedModel, setSelectedModel] = React.useState("");
   const [params, setParams] = React.useState({});
 
-  
-
-  // Состояния поиска
-  const [priceFrom, setPriceFrom] = React.useState("");
-  const [priceTo, setPriceTo] = React.useState("");
-  const [capacityFrom, setCapacityFrom] = React.useState("");
-  const [capacityTo, setCapacityTo] = React.useState("");
-  const [yearFrom, setYearFrom] = React.useState("");
-  const [yearTo, setYearTo] = React.useState("");
-  const [carBody, setCarBody] = React.useState("");
-  const [driveType, setDriveType] = React.useState("");
-  const [fuelType, setFuelType] = React.useState("");
-  const [transmissionType, setTransmissionType] = React.useState("");
+  const [formData, setFormData] = React.useState({});
 
   // Хук загрузки параметров машин
   React.useEffect(() => {
@@ -36,6 +27,7 @@ export default function SearchPanel() {
 
   // Хук для получения моделей по марке
   React.useEffect(() => {
+    if (!selectedBrand) return;
     const featchModels = async () => {
       const responce = await getModelList(selectedBrand);
       setModels(responce.data);
@@ -52,21 +44,30 @@ export default function SearchPanel() {
     setSelectedModel(event.target.value);
   };
 
+  React.useEffect(() => {
+    console.log(formData);
+  })
+
+  const handleFormDataChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    const searchParams = {
+      brand__name: selectedBrand ? selectedBrand : null,
+      model__name: selectedModel ? selectedModel : null,
+      ...formData,
+    };
+    dispatch(setParamsForSearch(searchParams));
+  };
 
   const handleReset = () => {
     setSelectedBrand("");
     setSelectedModel("");
-    setPriceFrom("");
-    setPriceTo("");
-    setCapacityFrom("");
-    setCapacityTo("");
-    setYearFrom("");
-    setYearTo("");
-    setCarBody("");
-    setDriveType("");
-    setFuelType("");
-    setTransmissionType("");
-  }
+    setFormData({});
+  };
 
   return (
     <div className="container">
@@ -76,7 +77,7 @@ export default function SearchPanel() {
             <div className="panel-brand">
               <select
                 placeholder="Марка"
-                onChange={handleBrandChange}
+                onChange={(e) => handleBrandChange(e)}
                 value={selectedBrand}
               >
                 <option value="">Марка</option>
@@ -91,7 +92,7 @@ export default function SearchPanel() {
             <div className="panel-model">
               <select
                 placeholder="Модель"
-                onChange={handleModelChange}
+                onChange={(e) => handleModelChange(e)}
                 value={selectedModel}
               >
                 <option value="">Модель</option>
@@ -106,11 +107,25 @@ export default function SearchPanel() {
           <div className="panel-d">
             <div className="panel__add">
               <div className="price_block">
-                <input type="text" placeholder="Цена от" onChange={(e) => setPriceFrom(e.target.value)} />
-                <input type="text" placeholder="до" onChange={(e) => setPriceTo(e.target.value)}/>
+                <input
+                  type="text"
+                  placeholder="Цена от"
+                  name="price__gte"
+                  onChange={(e) => handleFormDataChange(e)}
+                />
+                <input
+                  type="text"
+                  placeholder="до"
+                  name="price__lte"
+                  onChange={(e) => handleFormDataChange(e)}
+                />
               </div>
               <div className="capacity_block">
-                <select placeholder="Объем от">
+                <select
+                  placeholder="Объем от"
+                  name="engine_capacity__gte"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">Объем от</option>
                   {params?.engine_capacity?.map((item, index) => (
                     <option key={index} value={item}>
@@ -118,17 +133,24 @@ export default function SearchPanel() {
                     </option>
                   ))}
                 </select>
-                <select placeholder="до">
+                <select
+                  placeholder="до"
+                  name="engine_capacity__lte"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">до</option>
-                  {params?.engine_capacity?.reverse().map((item, index) => (
-                    <option key={index} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {params?.engine_capacity
+                    ?.slice()
+                    .reverse()
+                    .map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="year_block">
-                <select placeholder="Год от" >
+                <select placeholder="Год от" name="year__gte" onChange={(e) => handleFormDataChange(e)}>
                   <option value="">Год от</option>
                   {params?.year?.map((item, index) => (
                     <option key={index} value={item}>
@@ -136,19 +158,30 @@ export default function SearchPanel() {
                     </option>
                   ))}
                 </select>
-                <select placeholder="до">
+                <select
+                  placeholder="до"
+                  name="year__lte"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">до</option>
-                  {params?.year?.reverse().map((item, index) => (
-                    <option key={index} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {params?.year
+                    ?.slice()
+                    .reverse()
+                    .map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
             <div className="left__box">
-              <div className="huzov">
-                <select placeholder="Кузов">
+              <div className="body_type">
+                <select
+                  placeholder="Кузов"
+                  name="car_body"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">Кузов</option>
                   {params?.car_body?.map((item, index) => (
                     <option key={index} value={item}>
@@ -158,7 +191,11 @@ export default function SearchPanel() {
                 </select>
               </div>
               <div className="drive">
-                <select placeholder="Привод">
+                <select
+                  placeholder="Привод"
+                  name="drive_type"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">Привод</option>
                   {params?.drive_type?.map((item, index) => (
                     <option key={index} value={item}>
@@ -168,7 +205,11 @@ export default function SearchPanel() {
                 </select>
               </div>
               <div className="engine">
-                <select placeholder="Двигатель">
+                <select
+                  placeholder="Двигатель"
+                  name="fuel_type"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">Двигатель</option>
                   {params?.fuel_type?.map((item, index) => (
                     <option key={index} value={item}>
@@ -178,7 +219,11 @@ export default function SearchPanel() {
                 </select>
               </div>
               <div className="transmission">
-                <select placeholder="Трансмиссия">
+                <select
+                  placeholder="Трансмиссия"
+                  name="transmission_type"
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">Трансмиссия</option>
                   {params?.transmission_type?.map((item, index) => (
                     <option key={index} value={item}>
@@ -191,10 +236,14 @@ export default function SearchPanel() {
           </div>
           <div className="panel__buttons">
             <div>
-              <p className="btn__reset" onClick={handleReset}>Сбросить</p>
+              <p className="btn__reset" onClick={handleReset}>
+                Сбросить
+              </p>
             </div>
             <div>
-              <p className="btn__find">Найти</p>
+              <p className="btn__find" onClick={handleFormSubmit}>
+                Найти
+              </p>
             </div>
           </div>
         </div>
@@ -202,4 +251,3 @@ export default function SearchPanel() {
     </div>
   );
 }
-

@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 // services
 import { getCarsList, getFilteredList } from "../../services/APIService";
-import { loadCars } from "../../Redux/reducers/carSlice";
+import { loadCars, clearCars } from "../../Redux/reducers/carSlice";
 // components
 import Loader from "../../components/ClipLoader/Loader";
 import SearchPanel from "../../components/SearchPanel/SearchPanel";
@@ -26,7 +26,7 @@ function getCorrectEnding(number) {
 
 export default function MainCarBlock() {
   const { carList, totalCars } = useSelector((state) => state.cars);
-  const { paramsForSearh } = useSelector((state) => state.filter);
+  const { paramsForSearch } = useSelector((state) => state.filter);
 
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
@@ -36,41 +36,46 @@ export default function MainCarBlock() {
 
   // Получение списка машин
   React.useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        let response = {};
+        if (Object.keys(paramsForSearch).length > 0) {
+          response = await getFilteredList(page, paramsForSearch);
+          dispatch(clearCars());
+        } else {
+          response = await getCarsList(page);
+        }
+        if (response.status === 200) {
+          dispatch(
+            loadCars({
+              cars: response.data.results,
+              totalCars: response.data.count,
+            })
+          );
+        } else {
+          console.log(response);
+          setMessage(response.message);
+        }
+      } catch (error) {
+        console.log(error);
+        setMessage(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchCars();
-  }, [page]);
+  }, [page, paramsForSearch]);
 
   const handleLoadMoreCars = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-
-  const fetchCars = async () => {
-    try {
-      const response = await getCarsList(page);
-      if (response.status === 200) {
-        dispatch(
-          loadCars({
-            cars: response.data.results,
-            totalCars: response.data.count,
-          })
-        );
-      } else {
-        console.log(response);
-        setMessage(response.message);
-      }
-    } catch (error) {
-      console.log(error);
-      setMessage(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
   return (
     <div className="main__block">
       {loading && <Loader loading={true} />}
       <div className="layout__main">
-        <SearchPanel/>
+        <SearchPanel />
         {message && <h3>{message}</h3>}
 
         <section className="section__cars">
@@ -78,9 +83,7 @@ export default function MainCarBlock() {
             <p>
               {totalCars} объявлен{getCorrectEnding(totalCars)}
             </p>
-            <select
-              placeholder="Сортировать"
-            >
+            <select placeholder="Сортировать">
               <option value="">активные</option>
               <option value="new">Новые объявления</option>
               <option value="cheap">дешевые</option>
