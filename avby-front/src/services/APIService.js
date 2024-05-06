@@ -20,6 +20,11 @@ export const getCar = async (id) => api.get(`cars/${id}`);
 
 export const getUser = async (id) => api.get(`users/${id}`);
 
+export const createCar = async (data) => {
+  const cfg = { headers: { "Content-Type": "multipart/form-data" } };
+  return api.post("cars/create", data, cfg);
+};
+
 export const authUser = async (username, email, password) =>
   api.post("users/register", { username, email, password });
 
@@ -27,7 +32,7 @@ export const loginUser = async (username, password) =>
   api.post("token/", { username, password });
 
 export const verifyToken = async (token) =>
-  api.post("token/verify", token);
+  await axios.post(apiURL + "token/verify", { token });
 
 export const getRefreshToken = async (refresh) =>
   api.post("token/refresh", refresh);
