@@ -10,7 +10,7 @@ import MessageBlock from "./components/MessageBlocks/MessageBlock.jsx";
 
 import { verifyToken } from "./services/APIService.js";
 import { login, logout } from "./Redux/reducers/authSlice.js";
-import { messageInfoAction } from "./Redux/reducers/messageInfoSlice.js";
+import { showMessageInfo } from "./Redux/reducers/messageInfoSlice.js";
 
 import "./App.css";
 
@@ -38,7 +38,7 @@ export default function App() {
         }
       } else {
         dispatch(
-          messageInfoAction({
+          showMessageInfo({
             type: "error",
             text: "Токен устарел, пожалуйста авторизуйтесь заново",
           })
