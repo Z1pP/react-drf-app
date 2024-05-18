@@ -1,10 +1,11 @@
 from datetime import timedelta
 from pathlib import Path
-from environs import Env
+from dotenv import load_dotenv
 import os
 
-env = Env()
-env.read_env()
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,11 +14,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4@g6m$kw))**c@h$oqun58@stpp2y1$0(3h9d&qmlk-=8-vw^g'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
+DEBUG = os.getenv('DEBUG', False) == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -31,10 +29,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #apps
     'parser.apps.ParserConfig',
     'cars.apps.CarsConfig',
     'telegram.apps.TelegramConfig',
     'user.apps.UserConfig',
+    'chat.apps.ChatConfig',
+    #libs
+    'channels',
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt',
@@ -73,6 +75,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'avby.wsgi.application'
+ASGI_APPLICATION = 'avby.asgi.application'
+
 
 
 # Database
@@ -81,11 +85,11 @@ WSGI_APPLICATION = 'avby.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'avby',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -190,3 +194,12 @@ SIMPLE_JWT = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 APPEND_SLASH = False
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.getenv('REDIS_HOST'), os.getenv('REDIS_PORT'))],
+        },
+    },
+}

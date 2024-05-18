@@ -29,5 +29,6 @@ urlpatterns = [
     # Apps route
     path('', include('cars.urls')),
     path('', include('user.urls')),
+    path('', include('chat.urls')),
     path('telegram/', include('telegram.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
