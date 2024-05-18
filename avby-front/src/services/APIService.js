@@ -38,7 +38,10 @@ export const getRefreshToken = async (refresh) =>
   api.post("token/refresh", refresh);
 
 export const updateUserData = async (id, data, config) => {
-  const cfg = { ...config, headers: { ...config?.headers, "Content-Type": "multipart/form-data" } };
+  const cfg = {
+    ...config,
+    headers: { ...config?.headers, "Content-Type": "multipart/form-data" },
+  };
   return api.patch(`users/update/${id}`, data, cfg);
 };
 
@@ -52,3 +55,6 @@ export const getAnnouncements = async (id) =>
   api.get(`cars/announcements/${id}`);
 
 export const getParams = async () => await api.get(`cars/params`);
+
+export const getRoomsByUserId = async (id) =>
+  api.get(`rooms/${id}`);
