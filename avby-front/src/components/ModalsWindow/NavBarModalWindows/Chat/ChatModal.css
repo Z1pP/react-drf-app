@@ -1,0 +1,90 @@
+.chat {
+    display: flex;
+    cursor: default;
+    width: 500px;
+
+    .users_list {
+        border-right: 1px solid #E1E8EE;
+        padding-right: 10px;
+        width: 30%;
+        
+        ul{
+            list-style: none;
+
+            .item {
+                width: 100%;
+                cursor: pointer;
+            }
+
+            .item:hover {
+                background-color: #E1E8EE;
+            }
+        }
+    }
+
+    .chat_window {
+        flex: 1;
+        padding-left: 10px;
+        width: 70%;
+
+        .room_name{
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+
+        .no_messages{
+            text-align: center;
+            margin-top: 20px;
+            color: #171a1e;
+            font-weight: bold;
+        }
+
+        .messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #E1E8EE;
+            padding: 10px;
+            margin-bottom: 10px;
+
+            .message{
+                margin-bottom: 10px;
+                background-color: rgba(255, 127, 80, 0.3);
+                padding: 10px;
+                border-radius: 15px;
+
+                strong{
+                    color: #171a1e;
+                    font-size: 16px;
+                }
+                
+                p{
+                   color: #171a1e;
+                   font-size: 14px;
+                }
+
+                span{
+                    font-size: 11px;
+                }
+            }
+
+            .me{
+                text-align: right;
+                margin-bottom: 10px;
+                background-color: rgba(0, 255, 255, 0.3);
+            }
+        }
+        
+        input {
+            width: calc(100% - 80px);
+            padding: 10px;
+            margin-right: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+        }
+    }
+}
+
+
+
