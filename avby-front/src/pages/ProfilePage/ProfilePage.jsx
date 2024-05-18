@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 //context
-import { messageInfoAction } from "../../Redux/reducers/messageInfoSlice";
+import { showMessageInfo } from "../../Redux/reducers/messageInfoSlice";
 import { verifyUser, logout, login } from "../../Redux/reducers/authSlice";
 import { setUser } from "../../Redux/reducers/userSlice";
 // services
@@ -64,7 +64,7 @@ export default function Profile() {
             });
             dispatch(setUser(response.data));
             dispatch(
-              messageInfoAction({
+              showMessageInfo({
                 type: "success",
                 text: "Данные успешно получены",
               })
@@ -80,7 +80,7 @@ export default function Profile() {
             dispatch(login(newAccessToken, refreshToken));
           } catch (refreshError) {
             dispatch(
-              messageInfoAction({
+              showMessageInfo({
                 type: "error",
                 text: "Необходимо авторизоваться",
               })
@@ -90,7 +90,7 @@ export default function Profile() {
           }
         } else {
           dispatch(
-            messageInfoAction({
+            showMessageInfo({
               type: "error",
               text: "Произошла ошибка при получении данных профиля",
             })
@@ -122,11 +122,11 @@ export default function Profile() {
       if (response.status === 200) {
         setUserIsUpdated(true);
         dispatch(
-          messageInfoAction({ type: "success", text: "Данные обновлены" })
+          showMessageInfo({ type: "success", text: "Данные обновлены" })
         );
       } else {
         dispatch(
-          messageInfoAction({
+          showMessageInfo({
             type: "error",
             text: "Произошла ошибка при обновлении данных профиля",
           })
@@ -134,7 +134,7 @@ export default function Profile() {
       }
     } catch (error) {
       dispatch(
-        messageInfoAction({
+        showMessageInfo({
           type: "error",
           text: "Произошла ошибка при обновлении данных профиля",
         })
@@ -153,13 +153,13 @@ export default function Profile() {
       const responce = await updateUserData(userId, image);
       if (responce.status === 200) {
         dispatch(
-          messageInfoAction({ type: "success", text: "Фото успешно обновлено" })
+          showMessageInfo({ type: "success", text: "Фото успешно обновлено" })
         );
         setUserIsUpdated(true);
       }
     } catch (error) {
       dispatch(
-        messageInfoAction({
+        showMessageInfo({
           type: "error",
           text: "Произошла ошибка при обновлении данных профиля",
         })

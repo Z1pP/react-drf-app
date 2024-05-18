@@ -10,17 +10,19 @@ export const messageInfoSlice = createSlice({
   name: "messageInfo",
   initialState,
   reducers: {
-    messageInfoAction: (state, action) => {
+    showMessageInfo: (state, action) => {
       state.text = action.payload.text
       state.type = action.payload.type
       state.show = true
     },
-    hideMessage: (state) => {
+    hideMessageInfo: (state) => {
+      state.text = ""
+      state.type = ""
       state.show = false
     }
   }
 })
 
-export const {messageInfoAction, hideMessage} = messageInfoSlice.actions
+export const { showMessageInfo, hideMessageInfo} = messageInfoSlice.actions
 
 export default messageInfoSlice.reducer

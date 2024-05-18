@@ -12,16 +12,14 @@ import { getUser, getAnnouncements } from "../../services/APIService";
 // context
 import {
   setUser,
-  setAnnouncements,
-  removeAnnouncement,
-  addNotification,
-  removeNotification,
-  removeFromFavorite,
+  setAnnouncements
 } from "../../Redux/reducers/userSlice";
 // components
 import AnnouncementsModal from "../ModalsWindow/NavBarModalWindows/AnnoucementModal";
 import NotificationsModal from "../ModalsWindow/NavBarModalWindows/NotificationsModal";
 import FavoritesModal from "../ModalsWindow/NavBarModalWindows/FavoritesModal";
+import NavBarModal from "../ModalsWindow/NavBarModalWindows/NavBarModal";
+import ChatModal from "../ModalsWindow/NavBarModalWindows/Chat/ChatModal";
 import "./Header.css";
 
 const renderIfIsLoggedIn = (component) => {
@@ -83,18 +81,29 @@ function SaleButton() {
 }
 
 function Messages() {
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  }
+
   return renderIfIsLoggedIn(
     <div className="header__profile btn--messages" title="messages">
-      <div className="header__profile-messages">
+      <div className="header__profile-messages" onClick={toggleModal}>
         <img src={messages_svg} alt="messages" />
       </div>
       <p>Сообщения</p>
+
+      <NavBarModal showModal={showModal}>
+        <ChatModal />
+      </NavBarModal>
     </div>
   );
 }
 
 function Announcement() {
   const dispatch = useDispatch();
+  const announcements = useSelector((state) => state.user.announcements);
   const { userId } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
 
@@ -105,79 +114,67 @@ function Announcement() {
 
   useEffect(() => {
     fetchAnnouncements();
-  }, []);
+  }, [userId]);
 
-  const handleModalToggle = () => {
+  const toggleModal = () => {
     setShowModal(!showModal);
-  };
-
-  const handleRemoveAnnouncement = (item) => {
-    dispatch(removeAnnouncement(item.id));
-    dispatch(addNotification(`Объявление ${item.name} было удалено`));
   };
 
   return renderIfIsLoggedIn(
     <div className="header__profile btn--announcement" title="announcement">
-      <div className="header__profile-announcement" onClick={handleModalToggle}>
+      <div className="header__profile-announcement" onClick={toggleModal}>
         <img src={annouc_svg} alt="announcement" />
+        {announcements.length > 0 && <span>{announcements.length}</span>}
       </div>
       <p>Объявления</p>
-      <AnnouncementsModal
-        showModal={showModal}
-        removeAnnouncement={handleRemoveAnnouncement}
-      />
+
+      <NavBarModal showModal={showModal}>
+        <AnnouncementsModal announcements={announcements}/>
+      </NavBarModal>
     </div>
   );
 }
 
 function Favorites() {
-  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.user.favorites);
   const [showModal, setShowModal] = useState(false);
-  
-  const handleModalToggle = () => {
+
+  const toggleModal = () => {
     setShowModal(!showModal);
   };
 
-  const handleRemoveFavorite = (item) => {
-    dispatch(removeFromFavorite(item.id));
-  }
-
   return renderIfIsLoggedIn(
     <div className="header__profile btn--favorites" title="favorites">
-      <div className="header__profile-favorites" onClick={handleModalToggle}>
+      <div className="header__profile-favorites" onClick={toggleModal}>
         <img src={favorites_svg} alt="favorites" />
+        {favorites.length > 0 && <span>{favorites.length}</span>}
       </div>
       <p>Избранное</p>
-      <FavoritesModal showModal={showModal} removeFavorite={handleRemoveFavorite}/>
+      <NavBarModal showModal={showModal}>
+        <FavoritesModal favorites={favorites}/>
+      </NavBarModal>
     </div>
   );
 }
 
 function Notices() {
-  const dispatch = useDispatch();
-  const { notifications } = useSelector((state) => state.user);
+  const notifications = useSelector((state) => state.user.notifications);
   const [showModal, setShowModal] = useState(false);
 
-  const handleModalToggle = () => {
+  const toggleModal = () => {
     setShowModal(!showModal);
-  };
-
-  const handleRemoveNotification = (item) => {
-    dispatch(removeNotification(item));
   };
 
   return (
     <div className="header__profile btn--notice">
-      <div className="header__profile-notice" onClick={handleModalToggle}>
+      <div className="header__profile-notice" onClick={toggleModal}>
         <img src={header_notice} alt="notice" />
         {notifications.length > 0 && <span>{notifications.length}</span>}
       </div>
       <p>Уведомления</p>
-      <NotificationsModal
-        showModal={showModal}
-        notifications={notifications}
-        removeNotification={handleRemoveNotification}
-      />
+      <NavBarModal showModal={showModal}>
+        <NotificationsModal />
+      </NavBarModal>
     </div>
   );
 }

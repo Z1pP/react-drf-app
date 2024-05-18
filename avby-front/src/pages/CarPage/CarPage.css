@@ -116,6 +116,23 @@ span.price__usd{
     padding: 6px 0;
 }
 
+.car-main.delete-announcement{
+    margin-top: 20px;
+
+    button{
+        color: white;
+        font-weight: 400;
+        margin: 0;
+        padding: 10px;
+        background-color: #d83e3e;
+        border-radius: 12px;
+    }
+
+    button:hover{
+        background-color: gray;
+    }
+}
+
 .car-main.owner-block{
     margin-top: auto;
     padding-bottom: 0;
@@ -202,9 +219,6 @@ span.owner__city{
     width: 25px;
 }
 
-.add_favorite__btn {
-    
-}
 
 .bookmarks{
     display: flex;
@@ -219,6 +233,7 @@ span.owner__city{
         width: 25px;
     }
 }
+
 .bookmarks.active{
     background: #d83e3e;
 }

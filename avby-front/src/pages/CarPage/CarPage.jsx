@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // images
@@ -14,8 +14,11 @@ import CarsList from "../../components/CarsList/CarsList.jsx";
 // services
 import { getCar } from "../../services/APIService.js";
 // context
-import { addToFavorites, removeFromFavorite } from "../../Redux/reducers/userSlice.js";
-import { messageInfoAction } from "../../Redux/reducers/messageInfoSlice.js";
+import {
+  addToFavorites,
+  removeFromFavorite,
+} from "../../Redux/reducers/userSlice.js";
+import { showMessageInfo } from "../../Redux/reducers/messageInfoSlice.js";
 import "./CarPage.css";
 
 const title = "Машина";
@@ -28,9 +31,7 @@ export default function CarPage() {
   const [car, setCar] = useState(); // хук состояния машины
   const [loading, setLoading] = useState(false);
   const [modalActive, setModalActive] = useState(false);
-  const [isFavorite, setIsFavorite] = useState();
-
-  
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const fetchCar = async () => {
     try {
@@ -47,7 +48,7 @@ export default function CarPage() {
 
   // Загрузка машины при первом рендеринге страницы
   useEffect(() => {
-    if (car){
+    if (car) {
       setIsFavorite(favorites.some((favorite) => favorite.id === car.id));
     }
     console.log("URL изменен, перезагружаем страницу");
@@ -56,18 +57,20 @@ export default function CarPage() {
 
   const handleFavoritesClick = () => {
     if (car.seller.id === user.id) {
-      dispatch(messageInfoAction({
-        text: "Вы не можете добавить свою машину в избранное",
-        type: "error"
-      }))
-      return
+      dispatch(
+        showMessageInfo({
+          text: "Вы не можете добавить свою машину в избранное",
+          type: "error",
+        })
+      );
+      return;
     }
     if (isFavorite) {
       dispatch(removeFromFavorite(car.id));
-    } else{
+    } else {
       dispatch(addToFavorites(car));
     }
-  }
+  };
 
   return (
     <div>
@@ -140,49 +143,62 @@ export default function CarPage() {
                     </span>
                   </div>
                 </div>
-
+                
                 <CarParams params={car} />
+                {car.seller.id === user.id ? (
+                  <div className="car-main delete-announcement">
+                    <button
+                      className="delete-announcement__btn"
+                      onClick={() => setModalActive(true)}
+                    >
+                      Удалить объявление
+                    </button>
+                  </div>
+                ) : (
+                  <div className="car-main owner-block">
+                    <div className="owner-info">
+                      <div className="owner-info__avatar">
+                        <img
+                          src={car.seller.image || car_logo}
+                          alt="owner_profile"
+                        />
+                        <div className="owner-info__name">
+                          <h3 className="owner__name">{car.seller.username}</h3>
+                          <span className="owner__city">
+                            г. {car.seller.city}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="car-main__btn">
+                      <div className="show-contact__btn">
+                        <button onClick={() => setModalActive(true)}>
+                          Показать контакты
+                        </button>
+                      </div>
 
-                <div className="car-main owner-block">
-                  <div className="owner-info">
-                    <div className="owner-info__avatar">
-                      <img
-                        src={car.seller.image || car_logo}
-                        alt="owner_profile"
+                      <ModalWindowContacts
+                        active={modalActive}
+                        setActive={setModalActive}
+                        user={car.seller}
                       />
-                      <div className="owner-info__name">
-                        <h3 className="owner__name">{car.seller.username}</h3>
-                        <span className="owner__city">
-                          г. {car.seller.city}
+
+                      <div className="send-message-user">
+                        <a className="send-message__btn" href="">
+                          <img src={message_svg} alt="написать сообщение" />
+                        </a>
+                      </div>
+                      <div className="add_favorite__btn">
+                        <span
+                          className={`bookmarks ${isFavorite ? "active" : ""}`}
+                          onClick={handleFavoritesClick}
+                        >
+                          <img src={favorites_svg} alt="Добавить и избранное" />
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="car-main__btn">
-                    <div className="show-contact__btn">
-                      <button onClick={() => setModalActive(true)}>
-                        Показать контакты
-                      </button>
-                    </div>
-
-                    <ModalWindowContacts
-                      active={modalActive}
-                      setActive={setModalActive}
-                      user={car.seller}
-                    />
-
-                    <div className="send-message-user">
-                      <a className="send-message__btn" href="">
-                        <img src={message_svg} alt="написать сообщение" />
-                      </a>
-                    </div>
-                    <div className="add_favorite__btn">
-                      <span className={`bookmarks ${isFavorite ? "active" : ""}`} onClick={handleFavoritesClick}>
-                        <img src={favorites_svg} alt="Добавить и избранное" />
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
             <div className="container">

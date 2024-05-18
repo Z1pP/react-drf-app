@@ -106,6 +106,44 @@
     color: #808080;
 }
 
+.header__profile-favorites{
+    position: relative;
+}
+
+.header__profile-favorites span{
+    position: absolute;
+    top: -5px;
+    right: -9px;
+    background: #e82222;
+    color: #fff;
+    font-size: 11px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 17px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.header__profile-announcement{
+    position: relative;
+}
+
+.header__profile-announcement span{
+    position: absolute;
+    top: -5px;
+    right: -9px;
+    background: #e82222;
+    color: #fff;
+    font-size: 11px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 17px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
 .header__profile.btn--announcement{
     cursor: pointer;
     display: flex;

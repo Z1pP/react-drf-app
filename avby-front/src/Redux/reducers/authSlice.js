@@ -40,10 +40,14 @@ const authSlice = createSlice({
       localStorage.removeItem("refreshToken");
     },
     setToken: (state, action) => {
-      state.token = action.payload;
+      const token = action.payload;
+      localStorage.setItem("token", action.payload);
+      state.token = token;
     },
     setRefreshToken: (state, action) => {
-      state.refreshToken = action.payload;
+      const refreshToken = action.payload;
+      localStorage.setItem("refreshToken", refreshToken);
+      state.refreshToken = refreshToken;
     },
   },
 });

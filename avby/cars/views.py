@@ -134,6 +134,7 @@ class CarsByUserIdListView(generics.ListAPIView):
 
 class CarParamsListView(generics.ListAPIView):
     permission_classes = (AllowAny,)
+    serializer_class = CarSerializer
     params_type = ['color', 'year', 'car_body', 'transmission_type', 'drive_type',
                    'fuel_type', 'engine_capacity', 'brand__name']
 
