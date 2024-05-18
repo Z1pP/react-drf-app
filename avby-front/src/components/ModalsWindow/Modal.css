@@ -15,6 +15,15 @@
     transform: scale(1);
 }
 
+.info__avatar{
+    display: flex;
+    
+    img{
+        width: 100px;
+        border-radius: 50%;
+    }
+}
+
 .modal__content{
     padding: 20px;
     border-radius: 20px;
@@ -24,12 +33,23 @@
 }
 
 .info__name{
-    margin-left: 12px;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 20px;
 
-.info__name h3{
-    margin: 0;
+    h3{
+        margin: 0;
+        margin-bottom: 5px;
+        font-size: 20px;
+        font-weight: 1000;
+    }
 
+    span{
+        margin: 0;
+        color: #7F8FA4;
+    }
 }
 
 .info__phone{
