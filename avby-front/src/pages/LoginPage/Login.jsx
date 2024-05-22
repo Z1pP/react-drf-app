@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 // context
 import { login } from "../../Redux/reducers/authSlice";
+import { showMessageInfo } from "../../Redux/reducers/messageInfoSlice";
 // services
 import { loginUser } from "../../services/APIService";
 import "./Login.css";
@@ -39,6 +40,7 @@ export default function LoginPage() {
   };
 
   if (isLoggedIn) {
+    dispatch(showMessageInfo({ type: "success", text: `Добро пожаловать ${username}` }));
     return <Navigate to="/" />;
   }
 

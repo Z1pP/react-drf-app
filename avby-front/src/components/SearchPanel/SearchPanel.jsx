@@ -7,7 +7,6 @@ import "./SearchPanel.css";
 
 export default function SearchPanel() {
   const dispatch = useDispatch();
-  const { paramsForSearch } = useSelector((state) => state.filter);
 
   const [models, setModels] = React.useState([]);
   const [selectedBrand, setSelectedBrand] = React.useState("");
@@ -16,7 +15,7 @@ export default function SearchPanel() {
 
   const [formData, setFormData] = React.useState({});
 
-  // Хук загрузки параметров машин
+  // Хук загрузки параметров
   React.useEffect(() => {
     const featchParams = async () => {
       const responce = await getParams();
@@ -33,6 +32,10 @@ export default function SearchPanel() {
       setModels(responce.data);
     };
     featchModels();
+
+    return () => {
+      setModels([]);
+    }
   }, [selectedBrand]);
 
   const handleBrandChange = (event) => {
@@ -44,10 +47,6 @@ export default function SearchPanel() {
     setSelectedModel(event.target.value);
   };
 
-  React.useEffect(() => {
-    console.log(formData);
-  })
-
   const handleFormDataChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -55,13 +54,16 @@ export default function SearchPanel() {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
+  };
+
+  React.useEffect(() => {
     const searchParams = {
       brand__name: selectedBrand ? selectedBrand : null,
       model__name: selectedModel ? selectedModel : null,
       ...formData,
     };
     dispatch(setParamsForSearch(searchParams));
-  };
+  }, [selectedBrand, selectedModel, formData]);
 
   const handleReset = () => {
     setSelectedBrand("");
@@ -111,12 +113,14 @@ export default function SearchPanel() {
                   type="text"
                   placeholder="Цена от"
                   name="price__gte"
+                  value={formData.price__gte || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 />
                 <input
                   type="text"
                   placeholder="до"
                   name="price__lte"
+                  value={formData.price__lte || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 />
               </div>
@@ -124,6 +128,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="Объем от"
                   name="engine_capacity__gte"
+                  value={formData.engine_capacity__gte || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">Объем от</option>
@@ -136,6 +141,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="до"
                   name="engine_capacity__lte"
+                  value={formData.engine_capacity__lte || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">до</option>
@@ -150,7 +156,12 @@ export default function SearchPanel() {
                 </select>
               </div>
               <div className="year_block">
-                <select placeholder="Год от" name="year__gte" onChange={(e) => handleFormDataChange(e)}>
+                <select
+                  placeholder="Год от"
+                  name="year__gte"
+                  value={formData.year__gte || ""}
+                  onChange={(e) => handleFormDataChange(e)}
+                >
                   <option value="">Год от</option>
                   {params?.year?.map((item, index) => (
                     <option key={index} value={item}>
@@ -161,6 +172,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="до"
                   name="year__lte"
+                  value={formData.year__lte || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">до</option>
@@ -180,6 +192,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="Кузов"
                   name="car_body"
+                  value={formData.car_body || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">Кузов</option>
@@ -194,6 +207,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="Привод"
                   name="drive_type"
+                  value={formData.drive_type || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">Привод</option>
@@ -208,6 +222,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="Двигатель"
                   name="fuel_type"
+                  value={formData.fuel_type || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">Двигатель</option>
@@ -222,6 +237,7 @@ export default function SearchPanel() {
                 <select
                   placeholder="Трансмиссия"
                   name="transmission_type"
+                  value={formData.transmission_type || ""}
                   onChange={(e) => handleFormDataChange(e)}
                 >
                   <option value="">Трансмиссия</option>

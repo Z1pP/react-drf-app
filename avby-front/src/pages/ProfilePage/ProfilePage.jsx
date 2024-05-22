@@ -105,6 +105,7 @@ export default function Profile() {
   }, [isLoggedIn, userIsUpdated]);
 
   const logoutFromProfile = () => {
+    dispatch(showMessageInfo({ type: "success", text: "Вы вышли из профиля" }));
     dispatch(logout());
     navigate("/");
   };

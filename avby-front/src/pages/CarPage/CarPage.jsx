@@ -11,8 +11,9 @@ import PhotoSlider from "../../components/PhotoSlider/Slider.jsx";
 import Loader from "../../components/ClipLoader/Loader.jsx";
 import ModalWindowContacts from "../../components/ModalsWindow/Modal.jsx";
 import CarsList from "../../components/CarsList/CarsList.jsx";
+import Assistant from "../../components/AIAssistant/Assistant.jsx";
 // services
-import { getCar } from "../../services/APIService.js";
+import { getCar, createRoom } from "../../services/APIService.js";
 // context
 import {
   addToFavorites,
@@ -54,6 +55,18 @@ export default function CarPage() {
     console.log("URL изменен, перезагружаем страницу");
     fetchCar();
   }, [id, favorites]);
+
+  const handleCreateRoom = async () => {
+    try {
+      const data = {
+        name: car.name,
+        current_users: [car.seller.id, user.id],
+      };
+      const response = await createRoom(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleFavoritesClick = () => {
     if (car.seller.id === user.id) {
@@ -143,7 +156,7 @@ export default function CarPage() {
                     </span>
                   </div>
                 </div>
-                
+
                 <CarParams params={car} />
                 {car.seller.id === user.id ? (
                   <div className="car-main delete-announcement">
@@ -155,49 +168,64 @@ export default function CarPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="car-main owner-block">
-                    <div className="owner-info">
-                      <div className="owner-info__avatar">
-                        <img
-                          src={car.seller.image || car_logo}
-                          alt="owner_profile"
+                  <>
+                    <div className="car-main assistant-block">
+                      <Assistant carInfo={car} />
+                    </div>
+                    <div className="car-main owner-block">
+                      <div className="owner-info">
+                        <div className="owner-info__avatar">
+                          <img
+                            src={car.seller.image || car_logo}
+                            alt="owner_profile"
+                          />
+                          <div className="owner-info__name">
+                            <h3 className="owner__name">
+                              {car.seller.username}
+                            </h3>
+                            <span className="owner__city">
+                              г. {car.seller.city}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="car-main__btn">
+                        <div className="show-contact__btn">
+                          <button onClick={() => setModalActive(true)}>
+                            Показать контакты
+                          </button>
+                        </div>
+
+                        <ModalWindowContacts
+                          active={modalActive}
+                          setActive={setModalActive}
+                          user={car.seller}
                         />
-                        <div className="owner-info__name">
-                          <h3 className="owner__name">{car.seller.username}</h3>
-                          <span className="owner__city">
-                            г. {car.seller.city}
+
+                        <div className="send-message-user">
+                          <span
+                            className="send-message__btn"
+                            onClick={() => handleCreateRoom()}
+                          >
+                            <img src={message_svg} alt="написать сообщение" />
+                          </span>
+                        </div>
+                        <div className="add_favorite__btn">
+                          <span
+                            className={`bookmarks ${
+                              isFavorite ? "active" : ""
+                            }`}
+                            onClick={handleFavoritesClick}
+                          >
+                            <img
+                              src={favorites_svg}
+                              alt="Добавить и избранное"
+                            />
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="car-main__btn">
-                      <div className="show-contact__btn">
-                        <button onClick={() => setModalActive(true)}>
-                          Показать контакты
-                        </button>
-                      </div>
-
-                      <ModalWindowContacts
-                        active={modalActive}
-                        setActive={setModalActive}
-                        user={car.seller}
-                      />
-
-                      <div className="send-message-user">
-                        <a className="send-message__btn" href="">
-                          <img src={message_svg} alt="написать сообщение" />
-                        </a>
-                      </div>
-                      <div className="add_favorite__btn">
-                        <span
-                          className={`bookmarks ${isFavorite ? "active" : ""}`}
-                          onClick={handleFavoritesClick}
-                        >
-                          <img src={favorites_svg} alt="Добавить и избранное" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  </>
                 )}
               </div>
             </div>

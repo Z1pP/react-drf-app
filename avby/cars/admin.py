@@ -1,8 +1,12 @@
 from django.contrib import admin
 
-from .models import Car, CarPhoto, CarBrand, CarModel
+from .models import Car, CarPhoto, CarBrand, CarModel, CarLink
 
-# Register your models here.
+@admin.register(CarLink)
+class CarLinkAdmin(admin.ModelAdmin):
+    list_display = ("id", "link")
+    ordering = ["link"]
+
 @admin.register(CarBrand)
 class CarBrandAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
@@ -21,8 +25,8 @@ class CarPhotoInline(admin.TabularInline):
 
 class CarAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "year", "price", "created")
-    ordering = ["-price", "year","created"]
-    search_fields = ["name", "brand", "model"]
+    ordering = ["-price", "year", "created"]
+    search_fields = ["name", "year", "price"]
     list_filter = ["year", "price"]
     list_per_page = 10
     inlines = [CarPhotoInline]

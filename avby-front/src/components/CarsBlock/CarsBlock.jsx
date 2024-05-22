@@ -2,12 +2,13 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 // services
 import { getCarsList, getFilteredList } from "../../services/APIService";
-import { loadCars, clearCars } from "../../Redux/reducers/carSlice";
+import { loadCars, clearCars, setFilter } from "../../Redux/reducers/carSlice";
 // components
 import Loader from "../../components/ClipLoader/Loader";
 import SearchPanel from "../../components/SearchPanel/SearchPanel";
 import CarsList from "../../components/CarsList/CarsList";
 import SideBar from "../../components/SideBar/SideBar";
+import { showMessageInfo } from "../../Redux/reducers/messageInfoSlice";
 
 function getCorrectEnding(number) {
   const lastDigit = number % 10;
@@ -54,7 +55,7 @@ export default function MainCarBlock() {
           );
         } else {
           console.log(response);
-          setMessage(response.message);
+          dispatch(showMessageInfo({ type: "error", text: response.message }));
         }
       } catch (error) {
         console.log(error);
@@ -65,17 +66,23 @@ export default function MainCarBlock() {
     };
 
     fetchCars();
-  }, [page, paramsForSearch]);
+  }, [page, paramsForSearch, dispatch]);
 
   const handleLoadMoreCars = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
+  const handleFilterChange = (newFilter) => {
+    setPage(1);
+    dispatch(clearCars());
+    dispatch(setFilter(newFilter));
+  }
+
   return (
     <div className="main__block">
       {loading && <Loader loading={true} />}
       <div className="layout__main">
-        <SearchPanel />
+        <SearchPanel/>
         {message && <h3>{message}</h3>}
 
         <section className="section__cars">
@@ -106,3 +113,5 @@ export default function MainCarBlock() {
     </div>
   );
 }
+
+

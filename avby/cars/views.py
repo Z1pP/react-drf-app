@@ -21,10 +21,28 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class CarListView(generics.ListAPIView):
-    queryset = Car.objects.order_by('-created')
+    # queryset = Car.objects.order_by('-created')
+    # serializer_class = CarSerializer
+    # permission_classes = (AllowAny,)
+    # pagination_class = StandardResultsSetPagination
+    queryset = Car.objects.order_by('-created').select_related('brand', 'model')
     serializer_class = CarSerializer
     permission_classes = (AllowAny,)
     pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = {
+        'brand__name': ['exact'],
+        'model__name': ['exact'],
+        'year': ['gte', 'lte'],
+        'price': ['gte', 'lte'],
+        'engine_capacity': ['gte', 'lte'],
+        'car_body': ['exact'],
+        'drive_type': ['exact'],
+        'fuel_type': ['exact'],
+        'transmission_type': ['exact'],
+    }
+    search_fields = ['brand__name', 'model__name']
+    ordering_fields = ['price', 'year']
 
 
 class CarDetailView(generics.RetrieveAPIView):

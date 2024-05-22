@@ -70,7 +70,7 @@ class Car(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, default=1, blank=True, related_name='cars_for_sale')
 
     # Количество просмотров
-    views_count = models.PositiveIntegerField(verbose_name='Количество просмотров',default=0)
+    views_count = models.PositiveIntegerField(verbose_name='Количество просмотров', default=0)
 
 
     class Meta:

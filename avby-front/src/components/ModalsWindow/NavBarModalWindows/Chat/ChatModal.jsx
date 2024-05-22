@@ -3,6 +3,11 @@ import { useSelector } from "react-redux";
 import { getRoomsByUserId } from "../../../../services/APIService";
 import "./ChatModal.css";
 
+function lastMessageFormatted(message) {
+  if (message.length < 20) return message;
+  return message.slice(0, 20) + "...";
+}
+
 function UsersList({ rooms, onSelectRoom }) {
   return (
     <div className="users_list">
@@ -10,7 +15,10 @@ function UsersList({ rooms, onSelectRoom }) {
       <ul>
         {rooms.map((room, index) => (
           <li className="item" key={index} onClick={() => onSelectRoom(room)}>
-            {room.name}
+            <p>{room.name}</p>
+            {room.last_message && (
+              <span>{lastMessageFormatted(room.last_message.text)}</span>
+            )}
           </li>
         ))}
       </ul>
@@ -39,10 +47,11 @@ export default function ChatComponent() {
       }
     };
     fetchRooms();
-  }, [rooms]);
+  }, [selectedRoom]);
 
   useEffect(() => {
     if (selectedRoom) {
+      console.log(selectedRoom);
       const ws = new WebSocket(
         `ws://localhost:8080/ws/chat/${selectedRoom.name}/?token=${token}`
       );
@@ -101,15 +110,29 @@ export default function ChatComponent() {
     }
   };
 
+  const onSelectRoom = (room) => {
+    if (!selectedRoom){
+      setSelectedRoom(room);
+    }
+    if (room && room.pk !== selectedRoom.pk) {
+      setSelectedRoom(room);
+    }
+  }
+
   if (rooms.length === 0) {
     return <h3>Пока что у вас нет сообщений</h3>;
   }
 
   return (
     <div className="chat">
-      <UsersList rooms={rooms} onSelectRoom={setSelectedRoom} />
+      <UsersList rooms={rooms} onSelectRoom={onSelectRoom} />
       <div className="chat_window">
-        {selectedRoom && <h2 className="room_name">{selectedRoom.name}</h2>}
+        {selectedRoom && (
+          <div className="selected_room">
+            <h2 className="room_name">{selectedRoom.name}</h2>
+            <span className="close_room">Удалить чат</span>
+          </div>
+        )}
         <div className="messages">
           {messages.length > 0
             ? messages.map((message, index) => (

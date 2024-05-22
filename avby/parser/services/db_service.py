@@ -1,5 +1,6 @@
 import os
 import requests
+
 from django.db import transaction, IntegrityError
 from django.core.files import File
 from django.utils.text import slugify
@@ -19,7 +20,7 @@ class DbService:
 
     @transaction.atomic
     def save_car(self, data: dict):
-        required_keys = ["name","brand", "model", "price", "description", "year", "params", "photo_links"]
+        required_keys = ["name", "brand", "model", "price", "description", "year", "params", "photo_links"]
 
         if not all(key in data for key in required_keys):
             raise ValueError(f'Отсутствуют необходимые ключи в словаре: {required_keys}')
@@ -49,17 +50,17 @@ class DbService:
         model_instance, _ = CarModel.objects.get_or_create(name=model, car_brand=brand_instance,
                                                            defaults={'slug': slugify(model)})
 
+
         # Создаем новую машину
         try:
             new_car = Car.objects.create(
-                name=name,brand=brand_instance, model=model_instance, year=year, engine_capacity=engine_copacity,
+                name=name, brand=brand_instance, model=model_instance, year=year, engine_capacity=engine_copacity,
                 fuel_type=fuel_type, transmission_type=transmission_type,
                 drive_type=drive_type, car_body=car_body, milage=milage,
                 condition=condition, color=color, description=description,
-                price=price
-            )
-        except IntegrityError:
-            print("Такая машина есть в базе данных!")
+                price=price)
+        except Exception as e:
+            print(f"Не удалось создать машину: {e}")
             return None
 
         # Загружаем фотографии для машины

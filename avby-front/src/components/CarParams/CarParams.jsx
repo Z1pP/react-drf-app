@@ -15,7 +15,7 @@ export default function CarParams({ params }) {
             <p>Цвет</p>
           </div>
           <div className="params__value">
-            <p>{params.color} л.</p>
+            <p>{params.color}</p>
           </div>
         </div>
         <div className="params__param">

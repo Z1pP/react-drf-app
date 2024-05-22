@@ -1,4 +1,7 @@
-/avby/media/
+/avby/media
 /avby/.env
 /avby/.idea
-/avby_fastapi
+/avby_fastapi/.venv
+/avby_fastapi/.env
+/avby-telegram-bot
+.vscode

@@ -58,3 +58,16 @@ export const getParams = async () => await api.get(`cars/params`);
 
 export const getRoomsByUserId = async (id) =>
   api.get(`rooms/${id}`);
+
+export const createRoom = async (data) =>{
+  return await api.post(`rooms`, {
+    name: data.name,
+    current_users: data.current_users
+  });
+}
+
+export const sendMessageForBot = async (message) =>{
+  return await axios.post(`http://127.0.0.1:8080/send_message`,
+    { message: message }
+  );
+}

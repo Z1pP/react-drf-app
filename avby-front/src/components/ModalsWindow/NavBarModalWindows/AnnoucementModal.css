@@ -4,6 +4,7 @@
     background-color: white;
     border-radius: 15px;
     z-index: 1000;
+    border: 2px solid #E1E8EE;
 
     .modal__overlay{
         padding: 10px;

@@ -40,7 +40,7 @@ export default function App() {
         dispatch(
           showMessageInfo({
             type: "error",
-            text: "Токен устарел, пожалуйста авторизуйтесь заново",
+            text: "Авторизация не прошла. Пожалуйста, авторизуйтесь",
           })
         );
         return <Navigate to="/login" />;
