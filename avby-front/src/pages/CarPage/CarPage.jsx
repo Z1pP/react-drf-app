@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // images
 import favorites_svg from "../../assets/favorites.svg";
@@ -13,7 +13,7 @@ import ModalWindowContacts from "../../components/ModalsWindow/Modal.jsx";
 import CarsList from "../../components/CarsList/CarsList.jsx";
 import Assistant from "../../components/AIAssistant/Assistant.jsx";
 // services
-import { getCar, createRoom } from "../../services/APIService.js";
+import { getCar, deleteCar, createRoom } from "../../services/APIService.js";
 // context
 import {
   addToFavorites,
@@ -27,6 +27,7 @@ const title = "Машина";
 export default function CarPage() {
   const dispatch = useDispatch();
   const { favorites, user } = useSelector((state) => state.user);
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   const { id } = useParams(); // Получение инфы по машине
   const [car, setCar] = useState(); // хук состояния машины
@@ -82,6 +83,27 @@ export default function CarPage() {
       dispatch(removeFromFavorite(car.id));
     } else {
       dispatch(addToFavorites(car));
+    }
+  };
+
+  const handleDeleteCar = async () => {
+    try {
+      const response = await deleteCar(car.id);
+      if (response.status === 204) {
+        dispatch(
+          showMessageInfo({
+            type: "success",
+            text: "Объявление успешно удалено",
+          })
+        );
+      }
+    } catch {
+      dispatch(
+        showMessageInfo({
+          type: "error",
+          message: "Произошла ошибка при удалении оюъявления",
+        })
+      );
     }
   };
 
@@ -142,6 +164,7 @@ export default function CarPage() {
             <div className="container">
               <div className="car-info__left">
                 <div className="car-info__wrap">
+
                   <PhotoSlider photos={car.photos} />
                 </div>
               </div>
@@ -152,20 +175,27 @@ export default function CarPage() {
                       {Math.floor(car.price)} руб
                     </span>
                     <span className="price__usd">
-                      ≈{Math.floor(car.price / 3.26)} $
+                      ≈{Math.floor(car.price / 3.2)} $
                     </span>
                   </div>
                 </div>
 
                 <CarParams params={car} />
-                {car.seller.id === user.id ? (
-                  <div className="car-main delete-announcement">
-                    <button
-                      className="delete-announcement__btn"
-                      onClick={() => setModalActive(true)}
-                    >
-                      Удалить объявление
-                    </button>
+                {isLoggedIn && car.seller.id === user.id ? (
+                  <div className="car-main management">
+                    <div className="car-main delete-announcement">
+                      <button
+                        className="delete-announcement__btn"
+                        onClick={() => handleDeleteCar()}
+                      >
+                        Удалить объявление
+                      </button>
+                    </div>
+                    <div className="car-main update-announcement">
+                      <button className="update-announcement__btn">
+                        Изменить
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <>

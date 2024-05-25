@@ -21,10 +21,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class CarListView(generics.ListAPIView):
-    # queryset = Car.objects.order_by('-created')
-    # serializer_class = CarSerializer
-    # permission_classes = (AllowAny,)
-    # pagination_class = StandardResultsSetPagination
     queryset = Car.objects.order_by('-created').select_related('brand', 'model')
     serializer_class = CarSerializer
     permission_classes = (AllowAny,)
@@ -111,6 +107,14 @@ class CarCreateView(generics.CreateAPIView):
 class CarUpdateView(generics.UpdateAPIView):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
+    permission_classes = (AllowAny,)
+    lookup_field = "id"
+
+
+class CarDeleteView(generics.DestroyAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+    lookup_field = "id"
 
 
 class CarFilterListView(generics.ListAPIView):

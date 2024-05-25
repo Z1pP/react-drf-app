@@ -47,6 +47,7 @@ async def get_htmls(pages_count: int) -> List[str]:
 def get_car_links(htmls: List[str], items_count: int) -> List[str]:
     """Получение ссылок на машины"""
     car_links = []
+
     for html in htmls:
         soup = BeautifulSoup(html, "html.parser")
 
@@ -70,6 +71,7 @@ def get_car_links(htmls: List[str], items_count: int) -> List[str]:
 async def get_cars_html(car_links: List[str]) -> List[str]:
     """Получение html страниц машин"""
     cars_html = []
+
     async with aiohttp.ClientSession() as session:
         tasks = []
         for link in car_links:

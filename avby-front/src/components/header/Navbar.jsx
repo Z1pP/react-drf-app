@@ -80,11 +80,11 @@ function SaleButton() {
   );
 }
 
-function Messages() {
+function Messages({setActiveModal, activeModal}) {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setActiveModal(activeModal === 'messages' ? null : 'messages');
   }
 
   return renderIfIsLoggedIn(
@@ -94,14 +94,14 @@ function Messages() {
       </div>
       <p>Сообщения</p>
 
-      <NavBarModal showModal={showModal}>
+      <NavBarModal showModal={activeModal === 'messages'}>
         <ChatModal />
       </NavBarModal>
     </div>
   );
 }
 
-function Announcement() {
+function Announcement({setActiveModal, activeModal}) {
   const dispatch = useDispatch();
   const announcements = useSelector((state) => state.user.announcements);
   const { userId } = useSelector((state) => state.auth);
@@ -117,7 +117,7 @@ function Announcement() {
   }, [userId]);
 
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setActiveModal(activeModal === 'announcements' ? null : 'announcements');
   };
 
   return renderIfIsLoggedIn(
@@ -128,19 +128,18 @@ function Announcement() {
       </div>
       <p>Объявления</p>
 
-      <NavBarModal showModal={showModal}>
+      <NavBarModal showModal={activeModal === 'announcements'}>
         <AnnouncementsModal announcements={announcements}/>
       </NavBarModal>
     </div>
   );
 }
 
-function Favorites() {
+function Favorites({setActiveModal, activeModal}) {
   const favorites = useSelector((state) => state.user.favorites);
-  const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setActiveModal(activeModal === 'favorites' ? null : 'favorites');
   };
 
   return renderIfIsLoggedIn(
@@ -150,29 +149,28 @@ function Favorites() {
         {favorites.length > 0 && <span>{favorites.length}</span>}
       </div>
       <p>Избранное</p>
-      <NavBarModal showModal={showModal}>
+      <NavBarModal showModal={activeModal === 'favorites'}>
         <FavoritesModal favorites={favorites}/>
       </NavBarModal>
     </div>
   );
 }
 
-function Notices() {
+function Notices({setActiveModal, activeModal}) {
   const notifications = useSelector((state) => state.user.notifications);
-  const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setActiveModal(activeModal === 'notifications' ? null : 'notifications');
   };
 
   return (
     <div className="header__profile btn--notice">
-      <div className="header__profile-notice" onClick={toggleModal}>
+      <div className="header__profile-notice"  onClick={toggleModal}>
         <img src={header_notice} alt="notice" />
         {notifications.length > 0 && <span>{notifications.length}</span>}
       </div>
       <p>Уведомления</p>
-      <NavBarModal showModal={showModal}>
+      <NavBarModal showModal={activeModal === 'notifications'}>
         <NotificationsModal />
       </NavBarModal>
     </div>
@@ -180,12 +178,14 @@ function Notices() {
 }
 
 export default function Navbar() {
+  const [activeModal, setActiveModal] = useState(null);
+
   return (
     <div className="header__profile">
-      <Favorites />
-      <Notices />
-      <Messages />
-      <Announcement />
+      <Favorites setActiveModal={setActiveModal} activeModal={activeModal}/>
+      <Notices setActiveModal={setActiveModal} activeModal={activeModal}/>
+      <Messages setActiveModal={setActiveModal} activeModal={activeModal}/>
+      <Announcement setActiveModal={setActiveModal} activeModal={activeModal}/>
       <AuthButton />
       <SaleButton />
     </div>

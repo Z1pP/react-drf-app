@@ -18,6 +18,11 @@ import "./ProfilePage.css";
 
 const title = "Мой профиль";
 
+
+const checkingPasswordDoNotMatch = (oldPassword, newPassword) => {
+  return oldPassword !== newPassword
+}
+
 export default function Profile() {
   document.title = title;
   const { isLoggedIn, userId, token, refreshToken } = useSelector(
@@ -40,6 +45,7 @@ export default function Profile() {
     phone: "",
     country: "",
     city: "",
+    
   });
 
   const [formPassword, setFormPassword] = useState({
@@ -52,6 +58,7 @@ export default function Profile() {
       try {
         if (isLoggedIn) {
           const response = await getUser(userId);
+
           if (response.status === 200) {
             setUserData(response.data);
             setTelegram(response.data.profile.telegram);
@@ -62,6 +69,7 @@ export default function Profile() {
               country: response.data.profile.country,
               city: response.data.profile.city,
             });
+
             dispatch(setUser(response.data));
             dispatch(
               showMessageInfo({
@@ -168,7 +176,10 @@ export default function Profile() {
     }
   };
 
-  const handleChangePassword = (e) => {};
+  const handleChangePassword = (e) => {
+    const { name, value } = e.target;
+    setFormPassword((prevState) => ({ ...prevState, [name]: value }));
+  };
 
   const handleSubmitPassword = async (event) => {};
 
@@ -199,7 +210,7 @@ export default function Profile() {
             />
             <ProfilePasswordSection
               formData={formPassword}
-              handleChange={handleChangePassword}
+              handleChange={handleChange}
               handleSubmit={handleSubmit}
             />
           </div>

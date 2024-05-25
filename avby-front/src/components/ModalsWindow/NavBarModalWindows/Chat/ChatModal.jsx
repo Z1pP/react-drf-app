@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getRoomsByUserId } from "../../../../services/APIService";
+import { getRoomsByUserId, removeRoom } from "../../../../services/APIService";
 import "./ChatModal.css";
 
 function lastMessageFormatted(message) {
@@ -111,13 +111,27 @@ export default function ChatComponent() {
   };
 
   const onSelectRoom = (room) => {
-    if (!selectedRoom){
+    if (!selectedRoom) {
       setSelectedRoom(room);
     }
     if (room && room.pk !== selectedRoom.pk) {
       setSelectedRoom(room);
     }
-  }
+  };
+
+  const onRemoveRoom = async () => {
+    if (selectedRoom) {
+      try {
+        const response = await removeRoom(selectedRoom.pk);
+        if (response.status === 204) {
+          setRooms(rooms.filter((room) => room.pk !== selectedRoom.pk));
+        }
+      } catch (error) {
+        console.log("Error");
+      }
+    }
+    setRooms((prevRooms) => prevRooms.filter((room) => room.pk !== selectedRoom.pk));
+  };
 
   if (rooms.length === 0) {
     return <h3>Пока что у вас нет сообщений</h3>;
@@ -130,7 +144,7 @@ export default function ChatComponent() {
         {selectedRoom && (
           <div className="selected_room">
             <h2 className="room_name">{selectedRoom.name}</h2>
-            <span className="close_room">Удалить чат</span>
+            <span className="close_room" onClick={onRemoveRoom}>Удалить чат</span>
           </div>
         )}
         <div className="messages">

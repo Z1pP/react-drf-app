@@ -72,17 +72,11 @@ export default function MainCarBlock() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const handleFilterChange = (newFilter) => {
-    setPage(1);
-    dispatch(clearCars());
-    dispatch(setFilter(newFilter));
-  }
-
   return (
     <div className="main__block">
       {loading && <Loader loading={true} />}
       <div className="layout__main">
-        <SearchPanel/>
+        <SearchPanel totalCars={totalCars} />
         {message && <h3>{message}</h3>}
 
         <section className="section__cars">

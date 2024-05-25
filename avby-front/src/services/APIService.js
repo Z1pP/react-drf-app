@@ -20,6 +20,8 @@ export const getCar = async (id) => api.get(`cars/${id}`);
 
 export const getUser = async (id) => api.get(`users/${id}`);
 
+export const deleteCar = async (id) => api.delete(`cars/delete/${id}`);
+
 export const createCar = async (data) => {
   const cfg = { headers: { "Content-Type": "multipart/form-data" } };
   return api.post("cars/create", data, cfg);
@@ -66,8 +68,12 @@ export const createRoom = async (data) =>{
   });
 }
 
+export const removeRoom = async (id) =>{
+  return await api.delete(`room/delete/${id}`);
+}
+
 export const sendMessageForBot = async (message) =>{
-  return await axios.post(`http://127.0.0.1:8080/send_message`,
+  return await axios.post(`http://127.0.0.1:8090/send_message`,
     { message: message }
   );
 }

@@ -22,7 +22,7 @@
 
                 p{
                     color: #171a1e;
-                    font-size: 20px;
+                    font-size: 16px;
                     margin-bottom: 5px;
                 }
 
@@ -48,13 +48,17 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-            padding: 5px 10px 0 10px;
+            padding: 5px 5px 0 5px;
 
             h2{
+                width: 70%;
                 margin: 0;
+                font-size: 16px;
             }
 
             span{
+                text-align: end;
+                width: 30%;
                 font-size: 12px;
                 color: #171a1e;
                 padding: 2px 5px;

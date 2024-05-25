@@ -1,5 +1,9 @@
+import os.path
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.text import slugify
 
 
@@ -85,6 +89,7 @@ class Car(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
     def __str__(self) -> str:
         return self.name
 
@@ -105,3 +110,14 @@ class CarLink(models.Model):
 
     def __str__(self) -> str:
         return self.link
+
+
+@receiver(post_delete, sender=CarPhoto)
+def delete_file_on_delete(sender, instance, **kwargs):
+    if instance.photo:
+        photo_path = instance.photo.path
+        if os.path.isfile(photo_path):
+            try:
+                os.remove(photo_path)
+            except PermissionError:
+                print(f"Не удалось удалить файл {photo_path}. Файл может быть занят другим процессом.")

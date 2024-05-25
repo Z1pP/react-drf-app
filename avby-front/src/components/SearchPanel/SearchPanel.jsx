@@ -1,11 +1,11 @@
 import React from "react";
 import { setParamsForSearch } from "../../Redux/reducers/filterSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getModelList } from "../../services/APIService";
 import { getParams } from "../../services/APIService";
 import "./SearchPanel.css";
 
-export default function SearchPanel() {
+export default function SearchPanel({totalCars}) {
   const dispatch = useDispatch();
 
   const [models, setModels] = React.useState([]);
@@ -258,7 +258,7 @@ export default function SearchPanel() {
             </div>
             <div>
               <p className="btn__find" onClick={handleFormSubmit}>
-                Найти
+                Найдено {totalCars}
               </p>
             </div>
           </div>

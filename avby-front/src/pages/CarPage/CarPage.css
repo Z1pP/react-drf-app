@@ -116,22 +116,45 @@ span.price__usd{
     padding: 6px 0;
 }
 
-.car-main.delete-announcement{
+.car-main.management{
     margin-top: 20px;
+    display: flex;
+    align-items: center;
 
-    button{
-        color: white;
-        font-weight: 400;
-        margin: 0;
-        padding: 10px;
-        background-color: #d83e3e;
-        border-radius: 12px;
+    .car-main.delete-announcement{
+        button{
+            color: white;
+            font-weight: 400;
+            margin: 0;
+            padding: 10px;
+            background-color: #d83e3e;
+            border-radius: 12px;
+        }
+    
+        button:hover{
+            background-color: gray;
+        }
     }
 
-    button:hover{
-        background-color: gray;
+    .car-main.update-announcement{
+        margin-left: 20px;
+        
+        button{
+            color: white;
+            font-weight: 400;
+            margin: 0;
+            padding: 10px;
+            background-color: #1967d2;
+            border-radius: 12px;
+        }
+
+        button:hover{
+            background-color: gray;
+        }
     }
 }
+
+
 
 .car-main.owner-block{
     margin-top: auto;

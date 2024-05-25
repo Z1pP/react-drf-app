@@ -1,9 +1,10 @@
 import { useContext, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 // context
 import { useSelector, useDispatch } from "react-redux";
 // context
 import { login } from "../../Redux/reducers/authSlice";
+import { showMessageInfo } from "../../Redux/reducers/messageInfoSlice";
 // services
 import { authUser } from "../../services/APIService";
 // components
@@ -20,9 +21,9 @@ function CheckPassword(password, password2) {
 }
 
 export default function RegisterPage() {
-  const { isLoggedIn } = useSelector((state) => state.auth);
-
   const dispath = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -32,8 +33,13 @@ export default function RegisterPage() {
   });
 
   if (isLoggedIn) {
-    navigate("/");
-    return null;
+    dispath(
+      showMessageInfo({
+        type: "success",
+        text: "Вы уже зарегистрированы",
+      })
+    );
+    return <Navigate to="/" />;
   }
 
   document.title = title;
@@ -44,15 +50,17 @@ export default function RegisterPage() {
     const { username, email, password, password2 } = formData;
 
     if (!CheckPassword(password, password2)) {
-      setMessage({
-        type: "error",
-        text: "Пароли не совпадают",
-      });
+      dispath(
+        showMessageInfo({
+          type: "error",
+          text: "Пароли не совпадают",
+        })
+      )
       return;
     }
     try {
       const response = await authUser(username, email, password);
-      dispath(login(response.data.access, response.data.refresh))
+      dispath(login(response.data.access, response.data.refresh));
       navigate("/login");
     } catch (error) {
       if (error.response && error.response.status === 401) {

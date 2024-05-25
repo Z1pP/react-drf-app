@@ -216,7 +216,7 @@ export default function SalePage() {
             placeholder="Тип коробки передач"
             type="text"
             name="transmission_type"
-            value={formData.transmission || ""}
+            value={formData.transmission_type || ""}
             onChange={handleFormDataChange}
             required
           />
