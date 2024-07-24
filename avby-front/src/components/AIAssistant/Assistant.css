@@ -1,0 +1,47 @@
+.assistant__block-wrapper{
+    padding: 0 10px 0 0;
+
+    .assistant__block{
+        background-color: rgba(128, 128, 128, 0.2);
+        border-radius: 10px;
+
+        .block-header{
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-bottom: 1px solid #E1E8EE;
+            justify-content: space-between;
+
+            .block-header__title{
+                display: flex;
+                flex-direction: column;
+
+                span{
+                    font-size: 12px;
+                }
+            }
+
+            svg{
+                height: 20px;
+                width: 20px;
+            }
+
+            svg:hover{
+                cursor: pointer;
+                background-color: white;
+                border-radius: 50%;
+            }
+        }
+
+        .block-content.active{
+            display: block;
+            padding: 5px 10px;
+            background-color: rgba(128, 128, 128, 0.2);
+        }
+
+        .block-content{
+            display: none;
+        }
+    }
+}
+

@@ -1,0 +1,79 @@
+.container{
+    width: 1110px;
+    margin: 0 auto;
+}
+
+.form__login{
+    margin: 0 auto;
+    padding: 20px 40px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+}
+
+.login-header{
+    text-align: center;
+}
+
+h1,h2,h3{
+    margin: 0;
+    padding: 0;
+}
+
+.login-form{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h3 {
+    text-align:left;
+    margin-left:40px;
+    color:black;
+  }
+
+form input[type="text"],
+form input[type="password"] {
+  max-width:400px;
+  width: 80%;
+  line-height:3em;
+  font-family: 'Ubuntu', sans-serif;
+  margin:1em 2em;
+  border-radius:5px;
+  border:2px solid #f2f2f2;
+  outline:none;
+  padding-left:10px;
+}
+
+form button {
+    height:40px;
+    width:100px;
+    background:#fff;
+    border:1px solid #f2f2f2;
+    border-radius:20px;
+    color: slategrey;
+    text-transform:uppercase;
+    font-family: 'Ubuntu', sans-serif;
+    cursor:pointer;
+}
+
+form button:hover {
+    background:#f2f2f2;
+}
+
+.login-register{
+    font-family: 'Ubuntu', sans-serif;
+    margin-top: 15px;
+    color:black;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+
+.login-register:hover{
+    color:#1967d2;
+}
+.login-error{
+    margin: 0;
+    align-items: center;
+    color:red;
+}

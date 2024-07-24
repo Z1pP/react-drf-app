@@ -1,0 +1,43 @@
+venv
+.env
+.idea
+.venv
+migrations/
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+venv.bak/
+.env
+
+# Django
+*.log
+db.sqlite3
+/media
+/staticfiles
+*.pot
+*.py[cod]
+*.sqlite3
+
+# React
+node_modules/
+build/
+.DS_Store
+npm-debug.log
+yarn-error.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Icon?
