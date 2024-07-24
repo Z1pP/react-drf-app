@@ -198,7 +198,7 @@ export default function Profile() {
 
           <div className="personal-info">
             <ProfileImageSection
-              image={userData?.profile.image}
+              image={userData?.profile?.image}
               handleImageChange={handleImageChange}
             />
             <ProfileInfoSection

@@ -1,7 +1,9 @@
-/avby/media
-/avby/.env
-/avby/.idea
-/avby_fastapi/.venv
-/avby_fastapi/.env
-/avby-telegram-bot
-.vscode
+venv
+.env
+.idea
+.venv
+migrations/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
