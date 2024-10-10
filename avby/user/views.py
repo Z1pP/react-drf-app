@@ -21,6 +21,7 @@ from .serializers import (
 
 # Create your views here.
 
+
 class UserRegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
@@ -33,8 +34,8 @@ class UserRegisterView(generics.CreateAPIView):
             # Генерация токенов для пользователя
             refresh = RefreshToken.for_user(user)
             response_data = {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
             }
             return Response(response_data, status=201)
         return Response(serializer.errors, status=400)
@@ -50,6 +51,7 @@ class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class UserUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
@@ -58,10 +60,11 @@ class UserUpdateView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         data = request.data
         instance = self.get_object()
-        serializer = self.get_serializer(instance,data=data, partial=True)
+        serializer = self.get_serializer(instance, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=200)
+
 
 class UserLoginView(TokenObtainPairView):
     serializer_class = UserLoginSerializer
