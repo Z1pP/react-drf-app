@@ -7,27 +7,34 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Snippets API",
-      default_version='v1',
-      description="Test description",
-      contact=openapi.Contact(email="contact@snippets.local"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Snippets API",
+        default_version="v1",
+        description="Test description",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
     # Swagger doc
-    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path(
+        "swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"
+    ),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     # Admin route
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # Apps route
-    path('', include('cars.urls')),
-    path('', include('user.urls')),
-    path('', include('chat.urls')),
-    path('telegram/', include('telegram.urls')),
+    path("v1/auth/", include("authentication.urls")),
+    path("v1/cars/", include("cars.urls")),
+    path("v1/user/", include("user.urls")),
+    path("v1/chat/", include("chat.urls")),
+    path("v1/telegram/", include("telegram.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
