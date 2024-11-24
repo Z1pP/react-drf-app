@@ -1,10 +1,28 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from telegram.models import TgUser
 from cars.models import Car
 
 
-# Create your models here.
+class CustomUser(AbstractUser):
+    mail = models.EmailField(unique=True, verbose_name="Электронная почта")
+
+    groups = models.ManyToManyField(
+        "auth.Group",
+        verbose_name="groups",
+        blank=True,
+        related_name="custom_user_set",
+        related_query_name="custom_user",
+    )
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        verbose_name="user permissions",
+        blank=True,
+        related_name="custom_user_set",
+        related_query_name="custom_user",
+    )
+
+
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(
         User,

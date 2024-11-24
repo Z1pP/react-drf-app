@@ -1,76 +1,84 @@
 from django.contrib.auth.models import User
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.core.files.images import ImageFile
-from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, status, views
+from rest_framework import permissions
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import FavoritesCars
 
 from .serializers import (
     UserSerializer,
-    UserLoginSerializer,
     UserRegisterSerializer,
     UserUpdateSerializer,
     UserFavoritesSerializer,
+    UserUpdatePasswordSerializer,
 )
-
-
-# Create your views here.
 
 
 class UserRegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            # Генерация токенов для пользователя
-            refresh = RefreshToken.for_user(user)
-            response_data = {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }
-            return Response(response_data, status=201)
-        return Response(serializer.errors, status=400)
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserListView(generics.ListAPIView):
+class UserListView(views.APIView):
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserDetailView(views.APIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        """
+        Return the user details information
+        """
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserUpdateView(generics.UpdateAPIView):
+class UserUpdateView(views.APIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
-    lookup_field = "pk"
+    permission_classes = (permissions.IsAuthenticated,)
 
     def patch(self, request, *args, **kwargs):
         data = request.data
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=data, partial=True)
+        instance = request.user
+        serializer = self.serializer_class(instance, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserLoginView(TokenObtainPairView):
-    serializer_class = UserLoginSerializer
+class UserUpdatePasswordView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserUpdatePasswordSerializer
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        instance = request.user
+        serializer = self.serializer_class(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserFavoritesListView(generics.ListAPIView):
     queryset = FavoritesCars.objects.all()
     serializer_class = UserFavoritesSerializer
-    lookup_field = "pk"
+    permission_classes = (permissions.IsAuthenticated,)

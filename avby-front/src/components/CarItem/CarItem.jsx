@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import car_logo from "../../assets/car-logo.svg";
 
 
-
-const EXCHANGE_RATE = 3.26;
-
 // Время публикации объявления
 const formatTimeElapsed = (createdTime) => {
   const createdDate = new Date(createdTime);
@@ -54,11 +51,12 @@ export default function CarItem({ car }) {
     price,
     seller,
     created,
+    usd_price,
   } = car;
 
   const firstPhoto = photos[0].photo; // извлечение первого фото
   const formattedPriceBYN = `${Math.floor(price)} руб.`;
-  const formattedPriceUSD = `${Math.floor(price / EXCHANGE_RATE)} $`;
+  const formattedPriceUSD = `${Math.floor(usd_price)} $`;
 
   return (
     <div className="block__car">
