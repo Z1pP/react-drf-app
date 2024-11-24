@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "secret_key")
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # apps
-    "parser.apps.ParserConfig",
+    "authentication.apps.AuthenticationConfig",
     "cars.apps.CarsConfig",
     "telegram.apps.TelegramConfig",
     "user.apps.UserConfig",
