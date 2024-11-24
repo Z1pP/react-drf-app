@@ -18,4 +18,9 @@ urlpatterns = [
         views.UserUpdatePasswordView.as_view(),
         name="user-password-update",
     ),
+    path(
+        "update/avatar",
+        views.UserUpdateImageView.as_view(),
+        name="user-avatar-update",
+    ),
 ]

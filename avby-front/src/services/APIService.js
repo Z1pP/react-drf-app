@@ -18,7 +18,7 @@ export const getFilteredList = async (page, params) =>
 
 export const getCar = async (id) => api.get(`cars/${id}`);
 
-export const getUser = async (id) => api.get(`users/${id}`);
+export const getUser = async () => api.get(`user/me`);
 
 export const deleteCar = async (id) => api.delete(`cars/delete/${id}`);
 
@@ -31,7 +31,7 @@ export const authUser = async (username, email, password) =>
   api.post("users/register", { username, email, password });
 
 export const loginUser = async (username, password) =>
-  api.post("token/", { username, password });
+  api.post("auth/token/", { username, password });
 
 export const verifyToken = async (token) =>
   await axios.post(apiURL + "token/verify", { token });
@@ -39,12 +39,28 @@ export const verifyToken = async (token) =>
 export const getRefreshToken = async (refresh) =>
   api.post("token/refresh", refresh);
 
-export const updateUserData = async (id, data, config) => {
+export const updateUserPersonalData = async (data, config) => {
+  const cfg = {
+    ...config,
+    headers: { ...config?.headers, "Content-Type": "application/json" },
+  };
+  return api.patch(`user/update`, data, cfg);
+};
+
+export const updateUserAvatar = async (data, config) => {
   const cfg = {
     ...config,
     headers: { ...config?.headers, "Content-Type": "multipart/form-data" },
   };
-  return api.patch(`users/update/${id}`, data, cfg);
+  return api.patch(`user/update/avatar`, data, cfg);
+};
+
+export const updateUserPassword = async (data, config) => {
+  const cfg = {
+    ...config,
+    headers: { ...config?.headers, "Content-Type": "application/json" },
+  };
+  return api.patch(`user/update/password`, data, cfg);
 };
 
 export const getBrandList = async () => api.get("brands");

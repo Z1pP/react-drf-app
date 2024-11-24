@@ -11,6 +11,7 @@ from .serializers import (
     UserUpdateSerializer,
     UserFavoritesSerializer,
     UserUpdatePasswordSerializer,
+    UserUpdateImageSerializer,
 )
 
 
@@ -68,6 +69,19 @@ class UserUpdateView(views.APIView):
 class UserUpdatePasswordView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserUpdatePasswordSerializer
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        instance = request.user
+        serializer = self.serializer_class(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserUpdateImageView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserUpdateImageSerializer
 
     def patch(self, request, *args, **kwargs):
         data = request.data

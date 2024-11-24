@@ -1,7 +1,7 @@
-import { BrowserRouter, Link } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useSelector, useDispatch} from "react-redux";
 
 import Header from "./components/header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -18,7 +18,7 @@ export default function App() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const verifyUserToken = async () => {
       if (token) {
         try {

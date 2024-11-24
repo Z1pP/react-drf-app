@@ -63,16 +63,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=20, required=False, allow_blank=True)
     country = serializers.CharField(max_length=20, required=False, allow_blank=True)
     city = serializers.CharField(max_length=20, required=False, allow_blank=True)
-    image = serializers.ImageField(required=False)
 
     class Meta:
         model = User
         fields = (
-            "id",
             "username",
             "phone",
             "country",
-            "image",
             "city",
         )
         read_only_fields = ("email",)
@@ -95,6 +92,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class UserUpdateImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=True)
+
+    class Meta:
+        model = UserProfileInfo
+        fields = ("image",)
 
 
 class UserUpdatePasswordSerializer(serializers.Serializer):

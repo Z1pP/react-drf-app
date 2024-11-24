@@ -34,7 +34,6 @@ class UserProfileInfo(models.Model):
         upload_to="user_photos/",
         blank=True,
         null=True,
-        default="user_photos/user-noimage.webp",
         verbose_name="Фото профиля",
     )
     phone = models.CharField(
