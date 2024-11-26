@@ -36,6 +36,7 @@ export default function Profile() {
           const response = await getUser();
 
           if (response.status === 200) {
+            console.log(response.data);
             setUserData(response.data);
             setTelegram(response.data.profile.telegram);
 
@@ -72,7 +73,7 @@ export default function Profile() {
 
           <div className="personal-info">
             <ImageSection
-              image={userData?.profile?.image}
+              image={userData.profile.image}
               onUpdateSuccess={() => setOnUpdateSuccess((prev) => !prev)}
             />
             <PersonalDataSection
