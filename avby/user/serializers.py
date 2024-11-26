@@ -95,8 +95,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateImageSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=True)
-
     class Meta:
         model = UserProfileInfo
         fields = ("image",)
