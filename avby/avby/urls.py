@@ -32,9 +32,9 @@ urlpatterns = [
     # Admin route
     path("admin/", admin.site.urls),
     # Apps route
-    path("v1/auth/", include("authentication.urls")),
-    path("v1/cars/", include("cars.urls")),
-    path("v1/user/", include("user.urls")),
-    path("v1/chat/", include("chat.urls")),
-    path("v1/telegram/", include("telegram.urls")),
+    path("api/v1/auth/", include("authentication.urls")),
+    path("api/v1/cars/", include("cars.urls")),
+    path("api/v1/user/", include("user.urls")),
+    path("api/v1/chat/", include("chat.urls")),
+    path("api/v1/telegram/", include("telegram.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
