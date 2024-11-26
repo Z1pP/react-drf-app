@@ -23,12 +23,26 @@ export default function PersonalDataSection({ initialData, onUpdateSuccess, tele
     event.preventDefault();
     
     // Создаем объект только с измененными данными
-    const changedData = Object.keys(formData).reduce((acc, key) => {
-      if (formData[key] !== initialData[key] && formData[key] !== '') {
-        acc[key] = formData[key];
-      }
-      return acc;
-    }, {});
+    const changedData = {};
+    
+    // Проверяем прямые поля
+    if (formData.username !== initialData.username && formData.username !== '') {
+      changedData.username = formData.username;
+    }
+    if (formData.email !== initialData.email && formData.email !== '') {
+      changedData.email = formData.email;
+    }
+    
+    // Проверяем поля профиля
+    if (formData.phone !== initialData.profile.phone && formData.phone !== '') {
+      changedData.phone = formData.phone;
+    }
+    if (formData.country !== initialData.profile.country && formData.country !== '') {
+      changedData.country = formData.country;
+    }
+    if (formData.city !== initialData.profile.city && formData.city !== '') {
+      changedData.city = formData.city;
+    }
 
     // Если нет изменений, не отправляем запрос
     if (Object.keys(changedData).length === 0) {
@@ -62,7 +76,7 @@ export default function PersonalDataSection({ initialData, onUpdateSuccess, tele
         <strong>Персональные данные</strong>
       </div>
       <form className="profile__form" onSubmit={handleSubmit}>
-        <div className="info">
+        <div className="info-section__form">
           <div className="info__data email-phone">
             <div className="input_wrap">
               <p className="input-title">Имя</p>

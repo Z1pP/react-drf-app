@@ -10,6 +10,12 @@ export default function PasswordSection({ onUpdateSuccess }) {
     old_password: "",
     new_password: "",
   });
+  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+
+  const handlePasswordVisibility = (e) => {
+    e.preventDefault();
+    setPasswordIsVisible(!passwordIsVisible);
+  };
 
   const handleChange = (e) => {
     setFormPassword({ ...formPassword, [e.target.name]: e.target.value });
@@ -17,6 +23,7 @@ export default function PasswordSection({ onUpdateSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await updateUserPassword(formPassword);
       if (response.status === 200) {
@@ -44,8 +51,8 @@ export default function PasswordSection({ onUpdateSuccess }) {
             <p className="input-title">Старый пароль</p>
             <input
               className="input_password"
-              type="password"
-              name="password"
+              type={passwordIsVisible ? "text" : "password"}
+              name="old_password"
               value={formPassword.old_password}
               onChange={handleChange}
             />
@@ -54,11 +61,14 @@ export default function PasswordSection({ onUpdateSuccess }) {
             <p className="input-title">Новый пароль</p>
             <input
               className="input_password"
-              type="password"
-              name="password2"
+              type={passwordIsVisible ? "text" : "password"}
+              name="new_password"
               value={formPassword.new_password}
               onChange={handleChange}
             />
+            <button onClick={handlePasswordVisibility} className="password-visibility-button">
+              {passwordIsVisible ? "Скрыть" : "Показать"}
+            </button>
           </div>
           <div className="after_block">
             <button onClick={handleSubmit}>Сохранить</button>
