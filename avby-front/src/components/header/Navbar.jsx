@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,10 +9,7 @@ import messages_svg from "../../assets/messages.svg";
 // services
 import { getUser, getAnnouncements } from "../../services/APIService";
 // context
-import {
-  setUser,
-  setAnnouncements
-} from "../../Redux/reducers/userSlice";
+import { setUser, setAnnouncements } from "../../Redux/reducers/userSlice";
 // components
 import AnnouncementsModal from "../ModalsWindow/NavBarModalWindows/AnnoucementModal";
 import NotificationsModal from "../ModalsWindow/NavBarModalWindows/NotificationsModal";
@@ -21,6 +17,8 @@ import FavoritesModal from "../ModalsWindow/NavBarModalWindows/FavoritesModal";
 import NavBarModal from "../ModalsWindow/NavBarModalWindows/NavBarModal";
 import ChatModal from "../ModalsWindow/NavBarModalWindows/Chat/ChatModal";
 import "./Header.css";
+import { baseURL } from "../../services/APIService";
+import defaultAvatar from "../../assets/no_avatar_image.png";
 
 const renderIfIsLoggedIn = (component) => {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -33,6 +31,9 @@ function AuthButton() {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
+  const imageFullLink = user?.profile?.image
+    ? `${baseURL}${user.profile.image}`
+    : defaultAvatar;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -50,7 +51,7 @@ function AuthButton() {
     };
 
     fetchUser();
-  }, [isLoggedIn, userId]);
+  }, [isLoggedIn, userId, dispatch]);
 
   return (
     <div className="header__profile">
@@ -58,7 +59,7 @@ function AuthButton() {
         <div>Loading...</div>
       ) : isLoggedIn ? (
         <Link className="header__profile-link" to={"/profile"}>
-          <img src={user?.profile?.image} alt="" />
+          <img src={imageFullLink} alt="" />
           <p>Профиль</p>
         </Link>
       ) : (
@@ -80,12 +81,12 @@ function SaleButton() {
   );
 }
 
-function Messages({setActiveModal, activeModal}) {
+function Messages({ setActiveModal, activeModal }) {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
-    setActiveModal(activeModal === 'messages' ? null : 'messages');
-  }
+    setActiveModal(activeModal === "messages" ? null : "messages");
+  };
 
   return renderIfIsLoggedIn(
     <div className="header__profile btn--messages" title="messages">
@@ -94,14 +95,14 @@ function Messages({setActiveModal, activeModal}) {
       </div>
       <p>Сообщения</p>
 
-      <NavBarModal showModal={activeModal === 'messages'}>
+      <NavBarModal showModal={activeModal === "messages"}>
         <ChatModal />
       </NavBarModal>
     </div>
   );
 }
 
-function Announcement({setActiveModal, activeModal}) {
+function Announcement({ setActiveModal, activeModal }) {
   const dispatch = useDispatch();
   const announcements = useSelector((state) => state.user.announcements);
   const { userId } = useSelector((state) => state.auth);
@@ -117,7 +118,7 @@ function Announcement({setActiveModal, activeModal}) {
   }, [userId]);
 
   const toggleModal = () => {
-    setActiveModal(activeModal === 'announcements' ? null : 'announcements');
+    setActiveModal(activeModal === "announcements" ? null : "announcements");
   };
 
   return renderIfIsLoggedIn(
@@ -128,18 +129,18 @@ function Announcement({setActiveModal, activeModal}) {
       </div>
       <p>Объявления</p>
 
-      <NavBarModal showModal={activeModal === 'announcements'}>
-        <AnnouncementsModal announcements={announcements}/>
+      <NavBarModal showModal={activeModal === "announcements"}>
+        <AnnouncementsModal announcements={announcements} />
       </NavBarModal>
     </div>
   );
 }
 
-function Favorites({setActiveModal, activeModal}) {
+function Favorites({ setActiveModal, activeModal }) {
   const favorites = useSelector((state) => state.user.favorites);
 
   const toggleModal = () => {
-    setActiveModal(activeModal === 'favorites' ? null : 'favorites');
+    setActiveModal(activeModal === "favorites" ? null : "favorites");
   };
 
   return renderIfIsLoggedIn(
@@ -149,28 +150,28 @@ function Favorites({setActiveModal, activeModal}) {
         {favorites.length > 0 && <span>{favorites.length}</span>}
       </div>
       <p>Избранное</p>
-      <NavBarModal showModal={activeModal === 'favorites'}>
-        <FavoritesModal favorites={favorites}/>
+      <NavBarModal showModal={activeModal === "favorites"}>
+        <FavoritesModal favorites={favorites} />
       </NavBarModal>
     </div>
   );
 }
 
-function Notices({setActiveModal, activeModal}) {
+function Notices({ setActiveModal, activeModal }) {
   const notifications = useSelector((state) => state.user.notifications);
 
   const toggleModal = () => {
-    setActiveModal(activeModal === 'notifications' ? null : 'notifications');
+    setActiveModal(activeModal === "notifications" ? null : "notifications");
   };
 
   return (
     <div className="header__profile btn--notice">
-      <div className="header__profile-notice"  onClick={toggleModal}>
+      <div className="header__profile-notice" onClick={toggleModal}>
         <img src={header_notice} alt="notice" />
         {notifications.length > 0 && <span>{notifications.length}</span>}
       </div>
       <p>Уведомления</p>
-      <NavBarModal showModal={activeModal === 'notifications'}>
+      <NavBarModal showModal={activeModal === "notifications"}>
         <NotificationsModal />
       </NavBarModal>
     </div>
@@ -182,10 +183,10 @@ export default function Navbar() {
 
   return (
     <div className="header__profile">
-      <Favorites setActiveModal={setActiveModal} activeModal={activeModal}/>
-      <Notices setActiveModal={setActiveModal} activeModal={activeModal}/>
-      <Messages setActiveModal={setActiveModal} activeModal={activeModal}/>
-      <Announcement setActiveModal={setActiveModal} activeModal={activeModal}/>
+      <Favorites setActiveModal={setActiveModal} activeModal={activeModal} />
+      <Notices setActiveModal={setActiveModal} activeModal={activeModal} />
+      <Messages setActiveModal={setActiveModal} activeModal={activeModal} />
+      <Announcement setActiveModal={setActiveModal} activeModal={activeModal} />
       <AuthButton />
       <SaleButton />
     </div>

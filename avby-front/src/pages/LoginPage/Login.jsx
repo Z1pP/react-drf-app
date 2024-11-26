@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -9,8 +8,6 @@ import { showMessageInfo } from "../../Redux/reducers/messageInfoSlice";
 // services
 import { loginUser } from "../../services/APIService";
 import "./Login.css";
-
-const key = "6Le7z9ApAAAAANIk2sx4Rd2ESetd5f95FyD9Sf07"
 
 export default function LoginPage() {
   const dispatch = useDispatch();

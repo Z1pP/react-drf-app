@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 // services
 import { getCarsList, getFilteredList } from "../../services/APIService";
-import { loadCars, clearCars, setFilter } from "../../Redux/reducers/carSlice";
+import { loadCars, clearCars } from "../../Redux/reducers/carSlice";
 // components
 import Loader from "../../components/ClipLoader/Loader";
 import SearchPanel from "../../components/SearchPanel/SearchPanel";

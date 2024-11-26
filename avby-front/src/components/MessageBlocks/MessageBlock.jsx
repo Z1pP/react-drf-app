@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {hideMessageInfo} from "../../Redux/reducers/messageInfoSlice";
+import { hideMessageInfo } from "../../Redux/reducers/messageInfoSlice";
 import "./MessageBlock.css";
 
 export default function MessageBlock() {
   const { text, type, show } = useSelector((state) => state.message);
   const dispatch = useDispatch();
 
-  const [visible, setVisible] = useState(show);
-
   useEffect(() => {
-    setVisible(show);
-  }, [show]);
-
-  useEffect(() => {
-    if (text && visible) {
+    if (text && show) {
       const timer = setTimeout(() => {
-        setVisible(false);
-        dispatch(hideMessageInfo()); 
-      }, 2000);
+        dispatch(hideMessageInfo());
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [text, visible, dispatch]);
+  }, [text, show, dispatch]);
 
-  const messageClass = type ? `block__${type.toLowerCase()}` : 'block'; 
+  if (!show) return null;
 
-  return visible ? (
-    <div className={messageClass}>{text}</div>
-  ) : null;
+  return (
+    <div className="message-modal">
+      <div className={`message-content ${type}`}>
+        <span className="message-text">{text}</span>
+      </div>
+    </div>
+  );
 }
