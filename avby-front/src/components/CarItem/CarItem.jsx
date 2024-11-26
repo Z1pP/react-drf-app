@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 // images
 import car_logo from "../../assets/car-logo.svg";
-
-
 // Время публикации объявления
 const formatTimeElapsed = (createdTime) => {
   const createdDate = new Date(createdTime);
 
   if (isNaN(createdDate.getTime())) {
-    return 'Invalid date';
+    return "Invalid date";
   }
 
   const timeDiff = Date.now() - createdDate.getTime();
@@ -18,21 +17,18 @@ const formatTimeElapsed = (createdTime) => {
   const days = Math.floor(hours / 24);
 
   if (days > 0) {
-    return `${days} ${days === 1 ? 'день' : 'дней'} назад`;
+    return `${days} ${days === 1 ? "день" : "дней"} назад`;
   } else if (hours > 0) {
-    return `${hours} ${hours === 1 ? 'час' : 'часов'} назад`;
+    return `${hours} ${hours === 1 ? "час" : "часов"} назад`;
   } else if (minutes > 0) {
-    return `${minutes} ${minutes === 1 ? 'минуту' : 'минут'} назад`;
+    return `${minutes} ${minutes === 1 ? "минуту" : "минут"} назад`;
   } else {
-    return `${seconds} ${seconds === 1 ? 'секунду' : 'секунд'} назад`;
+    return `${seconds} ${seconds === 1 ? "секунду" : "секунд"} назад`;
   }
 };
 
 export default function CarItem({ car }) {
-
-
-
-  if (!car){
+  if (!car) {
     return null; // Если нет объявления, вернуть null
   }
 
@@ -97,3 +93,7 @@ export default function CarItem({ car }) {
     </div>
   );
 }
+
+CarItem.propTypes = {
+  car: PropTypes.object.isRequired,
+};
