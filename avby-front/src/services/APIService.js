@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const apiURL = "http://127.0.0.1:8000/v1/";
+export const baseURL = "http://127.0.0.1:8000/";
+const apiURL = baseURL + "api/v1/";
 const api = axios.create({
   baseURL: apiURL,
 });
@@ -52,7 +53,7 @@ export const updateUserAvatar = async (data, config) => {
     ...config,
     headers: { ...config?.headers, "Content-Type": "multipart/form-data" },
   };
-  return api.patch(`user/update/avatar`, data, cfg);
+  return api.put(`user/update/avatar`, data, cfg);
 };
 
 export const updateUserPassword = async (data, config) => {
